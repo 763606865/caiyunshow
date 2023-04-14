@@ -1,4 +1,6 @@
-name: Laravel
+name: caiyunshow-github-actions
+
+concurrency: production
 
 on:
   push:
@@ -8,13 +10,11 @@ on:
 
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
-        php-version: '8.0'
+        php-version: '8.1'
     - uses: actions/checkout@v3
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -33,3 +33,12 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
+    - name: Deploy to aliyun server        # 为 step 指定一个名称，将会在 github action 的控制台中显示
+      uses: easingthemes/ssh-deploy@v2.1.5      #可以访问的仓库，实现的上传服务器步骤被封装在此action
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.ALI_PRIVATE_KEY }}  #这个是阿里云的私钥
+        ARGS: "-avzr --delete"
+        SOURCE: "./"
+        REMOTE_HOST: ${{ secrets.ALI_HOSTS }}    #阿里云的 ip
+        REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
+        TARGET: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"       #被部署的服务器路径
