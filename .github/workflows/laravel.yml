@@ -19,14 +19,14 @@ jobs:
     - name: Create .env
       run: |
         touch .env
-        echo APP_NAME=${{ secrets.APP_NAME }} >> .env
-        echo APP_ENV=${{ secrets.APP_ENV }} >> .env
-        echo APP_KEY=${{ secrets.APP_KEY }} >> .env
-        echo APP_DEBUG=${{ secrets.APP_DEBUG }} >> .env
-        echo APP_URL=${{ secrets.APP_URL }} >> .env
-        echo DB_CONNECTION=${{ secrets.DB_CONNECTION }} >> .env
+        echo APP_NAME=${{ variables.APP_NAME }} >> .env
+        echo APP_ENV=${{ variables.APP_ENV }} >> .env
+        echo APP_KEY=${{ variables.APP_KEY }} >> .env
+        echo APP_DEBUG=${{ variables.APP_DEBUG }} >> .env
+        echo APP_URL=${{ variables.APP_URL }} >> .env
+        echo DB_CONNECTION=${{ variables.DB_CONNECTION }} >> .env
+        echo DB_PORT=${{ variables.DB_PORT }} >> .env
         echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-        echo DB_PORT=${{ secrets.DB_PORT }} >> .env
         echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
         echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
         echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
