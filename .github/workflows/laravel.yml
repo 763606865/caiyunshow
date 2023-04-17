@@ -30,13 +30,6 @@ jobs:
 #         echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
 #         echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
 #         echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-    - name: Make envfile
-      uses: SpicyPizza/create-envfile@v1
-      with:
-        APP_NAME: ${{ vars.APP_NAME }}
-        APP_ENV: ${{ vars.APP_ENV }}
-        APP_DEBUG: ${{ vars.APP_DEBUG }}
-        file_name: .env
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key
@@ -61,3 +54,14 @@ jobs:
         REMOTE_HOST: ${{ secrets.ALI_HOSTS }}    #阿里云的 ip
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"       #被部署的服务器路径
+    - name: Env Replacer
+      uses: nookery/env-replace-action@main
+      with:
+        remote_script: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"
+        host: ${{ secrets.ALI_HOSTS }}
+        port: 22
+        username: ${{ secrets.ALI_USER }}
+        key: ${{ secrets.ALI_PRIVATE_KEY }}
+      env:
+        APP_NAME: ${{ vars.APP_NAME }}
+        APP_ENV: ${{ vars.APP_ENV }}
