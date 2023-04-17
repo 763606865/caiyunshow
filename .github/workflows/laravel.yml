@@ -43,7 +43,6 @@ jobs:
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"       #被部署的服务器路径
         script: |
-          touch .env
           echo APP_NAME=${{ vars.APP_NAME }} >> .env
           echo APP_ENV=${{ vars.APP_ENV }} >> .env
           echo APP_DEBUG=${{ vars.APP_DEBUG }} >> .env
