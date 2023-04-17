@@ -16,20 +16,27 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v3
-    - name: Create .env
-      run: |
-        touch .env
-        echo APP_KEY= > .env
-        echo APP_NAME=${{ vars.APP_NAME }} >> .env
-        echo APP_ENV=${{ vars.APP_ENV }} >> .env
-        echo APP_DEBUG=${{ vars.APP_DEBUG }} >> .env
-        echo APP_URL=${{ vars.APP_URL }} >> .env
-        echo DB_CONNECTION=${{ vars.DB_CONNECTION }} >> .env
-        echo DB_PORT=${{ vars.DB_PORT }} >> .env
-        echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-        echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
-        echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
-        echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+#     - name: Create .env
+#       run: |
+#         touch .env
+#         echo APP_KEY= > .env
+#         echo APP_NAME=${{ vars.APP_NAME }} >> .env
+#         echo APP_ENV=${{ vars.APP_ENV }} >> .env
+#         echo APP_DEBUG=${{ vars.APP_DEBUG }} >> .env
+#         echo APP_URL=${{ vars.APP_URL }} >> .env
+#         echo DB_CONNECTION=${{ vars.DB_CONNECTION }} >> .env
+#         echo DB_PORT=${{ vars.DB_PORT }} >> .env
+#         echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+#         echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
+#         echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
+#         echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        APP_NAME: ${{ vars.APP_NAME }}
+        APP_ENV: ${{ vars.APP_ENV }}
+        APP_DEBUG: ${{ vars.APP_DEBUG }}
+        file_name: .env
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key
