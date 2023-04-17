@@ -42,3 +42,17 @@ jobs:
         REMOTE_HOST: ${{ secrets.ALI_HOSTS }}    #阿里云的 ip
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"       #被部署的服务器路径
+      script: |
+        touch .env
+        echo APP_NAME=Laravel >> .env
+        echo APP_ENV=local >> .env
+        echo APP_KEY=base64:4gSZNZfEwI8KRC/EhZ47NxAO6tVXb1bbdtak6ObgAsk= >> .env
+        echo APP_DEBUG=true >> .env
+        echo APP_URL=http://localhost >> .env
+        echo DB_CONNECTION=mysql >> .env
+        echo DB_HOST=mysql >> .env
+        echo DB_PORT=3306 >> .env
+        echo DB_DATABASE=caiyunshow >> .env
+        echo DB_USERNAME=root >> .env
+        echo DB_PASSWORD= >> .env
+        cat .env
