@@ -43,16 +43,17 @@ jobs:
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"       #被部署的服务器路径
         script: |
+          rm -rf .env
           touch .env
-          echo APP_NAME=Laravel >> .env
-          echo APP_ENV=local >> .env
-          echo APP_KEY=base64:4gSZNZfEwI8KRC/EhZ47NxAO6tVXb1bbdtak6ObgAsk= >> .env
-          echo APP_DEBUG=true >> .env
-          echo APP_URL=http://localhost >> .env
-          echo DB_CONNECTION=mysql >> .env
-          echo DB_HOST=mysql >> .env
-          echo DB_PORT=3306 >> .env
-          echo DB_DATABASE=caiyunshow >> .env
-          echo DB_USERNAME=root >> .env
-          echo DB_PASSWORD= >> .env
+          echo APP_NAME=${{ secrets.APP_NAME }} >> .env
+          echo APP_ENV=${{ secrets.APP_ENV }} >> .env
+          echo APP_KEY=${{ secrets.APP_KEY }} >> .env
+          echo APP_DEBUG=${{ secrets.APP_DEBUG }} >> .env
+          echo APP_URL=${{ secrets.APP_URL }} >> .env
+          echo DB_CONNECTION=${{ secrets.DB_CONNECTION }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
+          echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
           cat .env
