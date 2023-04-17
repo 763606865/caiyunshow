@@ -42,3 +42,4 @@ jobs:
         REMOTE_HOST: ${{ secrets.ALI_HOSTS }}    #阿里云的 ip
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"       #被部署的服务器路径
+        APP_ENV: ${{ secrets.APP_ENV }}
