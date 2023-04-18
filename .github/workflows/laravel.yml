@@ -21,7 +21,7 @@ jobs:
       run: |
         touch .env
         echo APP_KEY= > .env
-#         echo APP_NAME=${{ vars.APP_NAME }} >> .env
+        echo APP_NAME=${{ vars.APP_NAME }} >> .env
 #         echo APP_ENV=${{ vars.APP_ENV }} >> .env
 #         echo APP_DEBUG=${{ vars.APP_DEBUG }} >> .env
 #         echo APP_URL=${{ vars.APP_URL }} >> .env
