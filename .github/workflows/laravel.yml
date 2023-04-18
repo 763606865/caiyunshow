@@ -1,6 +1,6 @@
 name: caiyunshow-github-actions
 
-concurrency: production
+concurrency: Production
 
 on:
   push:
