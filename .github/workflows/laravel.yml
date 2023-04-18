@@ -1,7 +1,5 @@
 name: caiyunshow-github-actions
 
-concurrency: Production
-
 on:
   push:
     branches: [ "master" ]
@@ -18,22 +16,19 @@ jobs:
         php-version: '8.1'
     - uses: actions/checkout@v3
     - name: Create .env
-#       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       run: |
         touch .env
         echo APP_KEY= > .env
         echo APP_NAME=${{ vars.APP_NAME }} >> .env
-        echo APP_ENV=production >> .env
-        echo APP_DEBUG=${{ secrets.ALI_HOSTS }} >> .env
-#         echo APP_ENV=${{ vars.APP_ENV }} >> .env
-#         echo APP_DEBUG=${{ vars.APP_DEBUG }} >> .env
-#         echo APP_URL=${{ vars.APP_URL }} >> .env
-#         echo DB_CONNECTION=${{ vars.DB_CONNECTION }} >> .env
-#         echo DB_PORT=${{ vars.DB_PORT }} >> .env
-#         echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-#         echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
-#         echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
-#         echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+        echo APP_ENV=${{ vars.APP_ENV }} >> .env
+        echo APP_DEBUG=${{ vars.APP_DEBUG }} >> .env
+        echo APP_URL=${{ vars.APP_URL }} >> .env
+        echo DB_CONNECTION=${{ vars.DB_CONNECTION }} >> .env
+        echo DB_PORT=${{ vars.DB_PORT }} >> .env
+        echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+        echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
+        echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
+        echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key
@@ -58,14 +53,3 @@ jobs:
         REMOTE_HOST: ${{ secrets.ALI_HOSTS }}    #阿里云的 ip
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/${{ secrets.ALI_USER }}/docker-workspace/www/code/caiyunshow"       #被部署的服务器路径
-        script: |
-          echo APP_NAME=${{ vars.APP_NAME }} >> .env
-          echo APP_ENV=${{ vars.APP_ENV }} >> .env
-          echo APP_DEBUG=${{ vars.APP_DEBUG }} >> .env
-          echo APP_URL=${{ vars.APP_URL }} >> .env
-          echo DB_CONNECTION=${{ vars.DB_CONNECTION }} >> .env
-          echo DB_PORT=${{ vars.DB_PORT }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
-          echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
