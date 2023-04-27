@@ -3,7 +3,7 @@ input , textarea , select{font-family:"Microsoft Yahei"; color:#555; font-size:1
 a{ color:#333;}
 a:hover{ color:#FFBF00;}
 /*头部*/
-.header{ width:100%; margin:0px auto; position:relative; height:130px; background:url(../images/bg_1.jpg) repeat-x; box-shadow:2px 2px 5px #666; z-index:99;}
+.header{ width:100%; margin:0px auto; position:relative; height:120px; background:url(../images/bg_1.jpg) repeat-x; box-shadow:2px 2px 5px #666; z-index:99;}
 .t_bg{ width:100%; height:40px; background:url(../images/bg_2.png) repeat;}
 .top{ width:1200px; height:40px; margin:0px auto; text-align:right;}
 .top .lang,.top .search{ display:inline-block; *display:inline; zoom:1; position:relative; margin-left:20px; font-size:14px; color:#FFF; vertical-align:top; height:40px; line-height:40px;}
@@ -12,13 +12,13 @@ a:hover{ color:#FFBF00;}
 .top .search{ width:210px; height:40px; background:#444444;}
 .top .search input[type="text"]{ width:165px; height:40px; padding:0 10px; border:0; background:none; font-size:14px; color:#FFF; position:absolute; left:0; top:0; line-height:40px;}
 .top .search input[type="submit"]{ width:40px; height:40px; background-color:#FFC000; background-image:url(../images/icon1.png); background-repeat:no-repeat; background-position:center center; border:0; position:absolute; right:0; top:0; z-index:9; cursor:pointer;}
-.header .head{ margin:0px auto;width:1200px; height:90px; text-align:left; position:relative;}
-.head .logo{ width:232px; height:59px; float:left; margin-top:16px;}
-.head .logo img{ width:232px; height:59px; vertical-align:top;}
+.header .head{ margin:0px auto;width:1200px; height:120px; text-align:left; position:relative;}
+.head .logo{ width:160px; height:120px; float:left; }
+.head .logo img{ width:160px; height:120px; vertical-align:top;}
 .head .nav_m{ width:830px; float:right; position:relative;}
 .head .nav{ width:100%; text-align:right;}
-.head .nav li{ display:inline-block; *display:inline; zoom:1; height:90px; position:relative; vertical-align:top; margin-left:10px;}
-.head .nav li a{ font-size:16px; width:104px; height:36px; text-align:center; line-height:36px; color:#111111; display:inline-block; *display:inline; zoom:1; vertical-align:top; margin-top:27px;}
+.head .nav li{ display:inline-block; *display:inline; zoom:1; height:120px; position:relative; vertical-align:top; margin-left:10px;}
+.head .nav li a{ font-size:16px; width:104px; height:36px; text-align:center; line-height:36px; color:#111111; zoom:1; vertical-align:top; display: inline-block; margin-top: 40px;}
 .head .nav li.now a,.head .nav li:hover a{ color:#FFF; background:#0065E9; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;}
 .head .nav li .er{ width:150px; position:absolute; left:-28px; top:90px; z-index:999; display:none;}
 .head .nav li:hover .er{ display:block;}
@@ -118,7 +118,7 @@ a:hover{ color:#FFBF00;}
 .f_nav li p a{ font-size:14px; color:#CBCBCB;}
 .f_nav li p a:hover{ color:#FFF;}
 .fn_m .f_ct{ width:320px; float:right; font-size:13px;}
-.fn_m .f_ct ul{ width:100%; margin-bottom:15px;} 
+.fn_m .f_ct ul{ width:100%; margin-bottom:15px;}
 .fn_m .f_ct ul li{ margin-bottom:10px;}
 .fn_m .f_ct ul li img{ width:16px; height:16px; vertical-align:top; margin-top:5px;}
 .fn_m .f_ct ul li span{ display:inline-block; *display:inline; zoom:1; width:300px; vertical-align:top; line-height:150%;}
@@ -209,10 +209,3 @@ a:hover{ color:#FFBF00;}
 .book_m ul li .name i{ display:block; text-align:right; font-style:normal; color:#F00; line-height:20px;}
 .book_m ul li textarea{ width:580px; height:194px; border:1px solid #ddd; line-height:175%;}
 .book_m ul li input[type="submit"]{ width:100px; text-align:center; color:#fff; cursor:pointer; background-color:#0065E9; color:#FFFFFF; }
-
-
-
-
-
-
-

@@ -3,10 +3,12 @@
 namespace App\Admin\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use Encore\Admin\Controllers\Dashboard;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
+use Encore\Admin\Tree;
 
 class HomeController extends Controller
 {
@@ -30,5 +32,14 @@ class HomeController extends Controller
                     $column->append(Dashboard::dependencies());
                 });
             });
+    }
+
+    public function menu(Content $content)
+    {
+        $tree = new Tree(new Menu);
+
+        return $content
+            ->header('树状模型')
+            ->body($tree);
     }
 }

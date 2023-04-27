@@ -63,7 +63,7 @@
                 <dl class="clearfix">
                     <dt><a href=""><img src="Assets/upload/pic4.jpg" alt=""/></a></dt>
                     <dd>
-                        <div class="title"><a href="">第二届“路必康杯”斗地主大赛</a></div>
+                        <div class="title"><a href="">第二届“彩云杯”斗地主大赛</a></div>
                         <div class="des">本届比赛较上届赛制有较大调整，设淘汰赛、小组赛、半决赛和决赛，逐轮进行。由于参赛人员较多，淘汰赛分上、下半区分别进行，优胜人员晋级小组赛，小组赛胜者晋级半决赛赛......</div>
                         <div class="time">
                             <a href="">+SEE MORE</a>
@@ -74,7 +74,7 @@
                 <dl class="clearfix">
                     <dt><a href=""><img src="Assets/upload/pic4.jpg" alt=""/></a></dt>
                     <dd>
-                        <div class="title"><a href="">第二届“路必康杯”斗地主大赛</a></div>
+                        <div class="title"><a href="">第二届“彩云杯”斗地主大赛</a></div>
                         <div class="des">本届比赛较上届赛制有较大调整，设淘汰赛、小组赛、半决赛和决赛，逐轮进行。由于参赛人员较多，淘汰赛分上、下半区分别进行，优胜人员晋级小组赛，小组赛胜者晋级半决赛赛......</div>
                         <div class="time">
                             <a href="">+SEE MORE</a>
@@ -85,7 +85,7 @@
                 <dl class="clearfix">
                     <dt><a href=""><img src="Assets/upload/pic4.jpg" alt=""/></a></dt>
                     <dd>
-                        <div class="title"><a href="">第二届“路必康杯”斗地主大赛</a></div>
+                        <div class="title"><a href="">第二届“彩云杯”斗地主大赛</a></div>
                         <div class="des">本届比赛较上届赛制有较大调整，设淘汰赛、小组赛、半决赛和决赛，逐轮进行。由于参赛人员较多，淘汰赛分上、下半区分别进行，优胜人员晋级小组赛，小组赛胜者晋级半决赛赛......</div>
                         <div class="time">
                             <a href="">+SEE MORE</a>
@@ -140,7 +140,7 @@
             </div>
             <dl class="i_md clearfix">
                 <dt><a href=""><img src="Assets/upload/pic6.jpg" alt=""/></a></dt>
-                <dd>人才是公司发展的重要因素，人才是公司最大的财富，路必康公司秉承以人为本，公平、公正、公开的经营管理原则, 为员工创造一个施展才华的舞台，通过丰裕的工作内容、优越的工作环境以及和谐的工作氛围，实现企业与个人的良性互动。公司提供具有竞争力的薪酬、福利及晋升机会, 诚邀各方英才加入路必康电子有限公司工作团队。我们真诚期待你的加入！</dd>
+                <dd>人才是公司发展的重要因素，人才是公司最大的财富，彩云公司秉承以人为本，公平、公正、公开的经营管理原则, 为员工创造一个施展才华的舞台，通过丰裕的工作内容、优越的工作环境以及和谐的工作氛围，实现企业与个人的良性互动。公司提供具有竞争力的薪酬、福利及晋升机会, 诚邀各方英才加入彩云电子有限公司工作团队。我们真诚期待你的加入！</dd>
             </dl>
         </div>
     </div>
