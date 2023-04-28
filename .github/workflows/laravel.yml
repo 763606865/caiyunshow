@@ -46,5 +46,4 @@ jobs:
         TARGET: "/var/www/html/caiyunshow"       #被部署的服务器路径
     - name: Migrate
       run: |
-        cd /var/www/html/caiyunshow
         php artisan migrate --force
