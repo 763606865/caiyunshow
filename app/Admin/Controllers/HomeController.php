@@ -33,13 +33,4 @@ class HomeController extends Controller
                 });
             });
     }
-
-    public function menu(Content $content)
-    {
-        $tree = new Tree(new Menu);
-
-        return $content
-            ->header('树状模型')
-            ->body($tree);
-    }
 }

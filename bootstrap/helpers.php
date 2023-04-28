@@ -10,7 +10,7 @@ if (!function_exists('tree')) {
     }
 }
 
-if (!function_exists('tree')) {
+if (!function_exists('generation')) {
     function generation(array $data = [])
     {
         foreach ($data as $value) {
