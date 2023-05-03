@@ -2,14 +2,14 @@
 <!--幻灯片-->
 <div id="banner" class="banner">
     <div id="owl-demo" class="owl-carousel">
-        <a class="item" target="_blank" href="" style="background-image:url('Assets/upload/banner.jpg')">
-            <img src="Assets/upload/banner.jpg" alt="">
+        <a class="item" target="_blank" href="" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
+            <img src="{{ asset('assets/upload/banner.jpg') }}" alt="">
         </a>
-        <a class="item" target="_blank" href="" style="background-image:url('Assets/upload/banner.jpg')">
-            <img src="Assets/upload/banner.jpg" alt="">
+        <a class="item" target="_blank" href="" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
+            <img src="{{ asset('assets/upload/banner.jpg') }}" alt="">
         </a>
-        <a class="item" target="_blank" href="" style="background-image:url('Assets/upload/banner.jpg')">
-            <img src="Assets/upload/banner.jpg" alt="">
+        <a class="item" target="_blank" href="" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
+            <img src="{{ asset('assets/upload/banner.jpg') }}" alt="">
         </a>
     </div>
 </div>

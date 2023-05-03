@@ -1,5 +1,6 @@
 <?php
 
+use App\Admin\Controllers\BannerController;
 use App\Admin\Controllers\MenuController;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Routing\Router;
@@ -17,5 +18,7 @@ Route::group([
     $router->get('/', 'HomeController@index')->name('home');
 
     $router->resource('menu', MenuController::class);
+
+    $router->resource('banner', BannerController::class);
 
 });
