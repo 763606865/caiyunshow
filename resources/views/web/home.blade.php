@@ -2,15 +2,11 @@
 <!--幻灯片-->
 <div id="banner" class="banner">
     <div id="owl-demo" class="owl-carousel">
-        <a class="item" target="_blank" href="" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
-            <img src="{{ asset('assets/upload/banner.jpg') }}" alt="">
+        @foreach($banners as $banner)
+        <a class="item" target="_blank" href="{{ $banner['link'] ?? '' }}" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
+            <img src="{{ asset($banner['image']) }}" alt="">
         </a>
-        <a class="item" target="_blank" href="" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
-            <img src="{{ asset('assets/upload/banner.jpg') }}" alt="">
-        </a>
-        <a class="item" target="_blank" href="" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
-            <img src="{{ asset('assets/upload/banner.jpg') }}" alt="">
-        </a>
+        @endforeach
     </div>
 </div>
 <!--幻灯片-->
