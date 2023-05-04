@@ -18,4 +18,9 @@
  *
  */
 
+use Encore\Admin\Grid\Column;
+
 Encore\Admin\Form::forget(['map', 'editor']);
+Column::extend('background_color', function ($value) {
+    return "<div style='width:100px; height:50px; display: block; background-color: $value;'></div>";
+});
