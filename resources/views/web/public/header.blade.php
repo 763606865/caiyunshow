@@ -31,9 +31,8 @@
 <!--头部-->
 <div class="header">
     <div class="head clearfix">
-        <div class="logo"><a href=""><img src="{{ asset('assets/images/logo.png') }}" alt="彩云网络"/></a></div>
+        <div class="logo"><a href="/"><img src="{{ asset('assets/images/logo.png') }}" alt="彩云网络"/></a></div>
         <div class="nav_m">
-            <div class="n_icon">导航栏</div>
             <ul class="nav clearfix">
                 @foreach($menus as $first)
                     <li>
@@ -53,6 +52,13 @@
                     </li>
                 @endforeach
             </ul>
+        </div>
+        <div class="nav_phone">
+            <div class="phone"><img src="{{ asset('assets/images/phone.png') }}" alt=""></div>
+            <div class="phone_text">
+                <div class="phone_text_tit">全国服务热线</div>
+                <div class="phone_text_number">16601063460</div>
+            </div>
         </div>
     </div>
 </div>

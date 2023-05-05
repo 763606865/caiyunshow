@@ -15,8 +15,13 @@ a:hover{ color:#FFBF00;}
 .header .head{ margin:0px auto;width:1200px; height:120px; text-align:left; position:relative;}
 .head .logo{ width:160px; height:120px; float:left; }
 .head .logo img{ width:160px; height:120px; vertical-align:top;}
-.head .nav_m{ width:830px; float:right; position:relative;}
-.head .nav{ width:100%; text-align:right;}
+.head .nav_m{ width:830px; float:left; position:relative;}
+.head .nav_phone{ width:180px; height: 120px; float:left; position:relative; padding-top: 40px; box-sizing: border-box; margin-left: 30px;}
+.head .nav_phone .phone{ width:38px; height: 38px; float:left;}
+.head .nav_phone .phone_text{ width:124px; height: 40px; float:left; margin-left: 10px;}
+.head .nav_phone .phone_text .phone_text_tit { font-size: 14px; letter-spacing:5px; }
+.head .nav_phone .phone_text .phone_text_number { font-size: 14px; letter-spacing:3px; color:#FF7327; }
+.head .nav{ width:100%; text-align:center;}
 .head .nav li{ display:inline-block; *display:inline; zoom:1; height:120px; position:relative; vertical-align:top; margin-left:10px;}
 .head .nav li a{ font-size:16px; width:104px; height:36px; text-align:center; line-height:36px; color:#111111; zoom:1; vertical-align:top; display: inline-block; margin-top: 40px;}
 .head .nav li.now a,.head .nav li:hover a{ color:#FFF; background:#0065E9; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;}

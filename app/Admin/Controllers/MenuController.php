@@ -72,7 +72,7 @@ class MenuController extends AdminController
 
         $form->text('name', __('Name'));
         $form->select('parent_id', __('Parent id'))->options($parents);
-        $form->url('link', __('Link'));
+        $form->text('link', __('Link'));
         $form->number('sort', __('Sort'));
 
         return $form;

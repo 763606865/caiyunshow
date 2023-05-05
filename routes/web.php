@@ -16,4 +16,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index']);
-Route::get('/introduction', [IntroductionController::class, 'index']);
+Route::get('/introduction/about', [IntroductionController::class, 'about']);
+Route::get('/introduction/project', [IntroductionController::class, 'project']);
+Route::get('/introduction/price', [IntroductionController::class, 'price']);
