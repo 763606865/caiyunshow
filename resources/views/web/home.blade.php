@@ -3,8 +3,8 @@
 <div id="banner" class="banner">
     <div id="owl-demo" class="owl-carousel">
         @foreach($banners as $banner)
-        <a class="item" target="_blank" href="{{ url($banner['link']) ?? '' }}" style="background-image:url('{{ asset('assets/upload/banner.jpg') }}')">
-            <img src="{{ asset($banner['image']) }}" alt="">
+        <a class="item" target="_blank" href="{{ $banner['link'] ?? '' }}" style="background-color:{{ $banner['background_color'] }};">
+            <img src="{{ asset($banner['image']) }}" alt="" style="width:100%;">
         </a>
         @endforeach
     </div>
@@ -12,7 +12,10 @@
 <!--幻灯片-->
 <div class="space_hx">&nbsp;</div>
 <div class="i_m">
-    <div class="i_name"><img src="Assets/images/n1.png" width="171" height="59" alt=""/></div>
+    <div class="i_name">
+        <h1>服务项目</h1>
+        <p>APP定制开发，互联网从业者必备</p>
+    </div>
     <ul class="i_ma clearfix">
         <li>
             <div class="title">

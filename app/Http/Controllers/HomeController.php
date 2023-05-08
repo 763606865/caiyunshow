@@ -12,6 +12,7 @@ class HomeController extends Controller
     {
         $menus = tree(Menu::orderBy('sort', 'asc')->get()->toArray());
         $banners = Banner::orderBy('sort', 'asc')->get()->toArray();
+
         return view('web.home')
             ->with('menus', $menus)
             ->with('banners', $banners);

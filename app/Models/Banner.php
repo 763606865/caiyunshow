@@ -10,7 +10,7 @@ class Banner extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'image', 'link', 'sort', 'background_color', 'web_weight', 'web_height', 'h5_weight', 'h5_height'
+        'name', 'image', 'link', 'sort', 'background_color', 'web_width', 'web_height', 'h5_width', 'h5_height'
     ];
 
     protected $attributes = [
