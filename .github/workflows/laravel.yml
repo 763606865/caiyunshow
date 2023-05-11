@@ -44,7 +44,7 @@ jobs:
         REMOTE_HOST: ${{ secrets.ALI_HOSTS }}    #阿里云的 ip
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/var/www/html/caiyunshow"       #被部署的服务器路径
-        script: |
-          php artisan storage:link
+    - name: Generate Soft Link
+      run: php artisan storage:link
     - name: Run Migration
       run: php artisan migrate --force
