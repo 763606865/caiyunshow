@@ -46,11 +46,5 @@ jobs:
         TARGET: "/var/www/html/caiyunshow"       #被部署的服务器路径
         script: |
           php artisan storage:link
-    - name: Laravel Deploy with Migrate and Cache Config
-      uses: MJAISE/laravel-deploy-migrate-cache@v2.0.4
-      with:
-        user: ${{ secrets.ALI_USER }}
-        host: ${{ secrets.ALI_HOSTS }}
-        port: 22
-        path: "/var/www/html/caiyunshow"
-        owner: root
+    - name: Run Migration
+      run: php artisan migrate --force
