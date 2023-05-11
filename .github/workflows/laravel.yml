@@ -45,5 +45,9 @@ jobs:
         REMOTE_USER: ${{ secrets.ALI_USER }}    #阿里云用户
         TARGET: "/var/www/html/caiyunshow"       #被部署的服务器路径
         script: |
-          php artisan migrate --force
           php artisan storage:link
+    - name: action-migrations
+      uses: getsentry/action-migrations@v1.2.2
+      with:
+        run: php artisan migrate
+        githubToken: ${{ secrets.ALI_PRIVATE_KEY }}
