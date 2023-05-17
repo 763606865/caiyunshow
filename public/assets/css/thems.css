@@ -1,6 +1,6 @@
 body{font-family:"Microsoft Yahei";font-size:14px;color:#555; padding:0; margin:0;}
 input , textarea , select{font-family:"Microsoft Yahei"; color:#555; font-size:14px;}
-a{ color:#333;}
+a{ color:#333; text-decoration:none}
 a:hover{ color:#FFBF00;}
 /*头部*/
 .header{ width:100%; margin:0px auto; position:relative; height:120px; background:url(../images/bg_1.jpg) repeat-x; box-shadow:2px 2px 5px #666; z-index:99;}
@@ -72,7 +72,7 @@ a:hover{ color:#FFBF00;}
 .i_ma{ width:100%; }
 .i_ma li{ width:340px; float:left; margin-right:25px; margin-bottom:20px;}
 .i_ma li .title{ width:100%; height:35px; line-height:35px;}
-.i_ma li .title img{ width:42px; height:32px; vertical-align:top;}
+.i_ma li .title img{ width:32px; height:32px; vertical-align:top;}
 .i_ma li .title span{ display:inline-block; *display:inline; zoom:1; vertical-align:top; height:32px; line-height:32px; font-size:16px; color:#004D83;}
 .i_ma li .tu,.i_ma li .tu img{ width:340px; height:140px; vertical-align:top;}
 .i_ma li .des{ width:100%; height:45px; font-size:13px; color:#555555; line-height:185%; overflow:hidden; margin-top:8px;}
@@ -215,3 +215,18 @@ a:hover{ color:#FFBF00;}
 .book_m ul li .name i{ display:block; text-align:right; font-style:normal; color:#F00; line-height:20px;}
 .book_m ul li textarea{ width:580px; height:194px; border:1px solid #ddd; line-height:175%;}
 .book_m ul li input[type="submit"]{ width:100px; text-align:center; color:#fff; cursor:pointer; background-color:#0065E9; color:#FFFFFF; }
+
+
+.p-t-box { width:1200px; margin: 20px auto; position: relative; display: block; padding: 10px 0; }
+.p-t-box .p-t-name { text-align: center; }
+.p-t-box .p-t-name h1 { letter-spacing: 3px;}
+.p-t-box .p-t-name p { letter-spacing: 2px; margin: 10px auto 35px;}
+.p-t-box .p-t-item ul{ display: flex; flex-direction: row; flex-wrap: wrap; align-items:center; padding: 0;}
+.p-t-box .p-t-item ul li { width:280px; margin: 10px; height:450px; display: flex; flex-direction: column; justify-content:space-between; align-items:center; padding-bottom: 20px; background: #f5f5f5; }
+.p-t-box .p-t-item ul li:hover { box-shadow: 2px 8px 20px #bcc8de; }
+.p-t-box .p-t-item .p-t-img { width:100%; }
+.p-t-box .p-t-item .p-t-img img { width:100%; }
+.p-t-box .p-t-item .p-t-content h5 { margin:12px 0 24px; text-align: center; }
+.p-t-box .p-t-item .p-t-content p { text-align: center; font-size: 14px; padding: 0 14px; }
+.p-t-box .p-t-item .p-t-btn { width: 100%; height: 45px; line-height: 45px; text-align: center; }
+.p-t-box .p-t-item .p-t-btn a { letter-spacing: 2px; }

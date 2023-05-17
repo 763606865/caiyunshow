@@ -9,6 +9,7 @@
     <script type="text/javascript" src="{{ asset('assets/js/jquery-1.8.3.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/js_z.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/banner.js') }}"></script>
+    <link rel="stylesheet" crossorigin="anonymous" href="{{ asset('assets/css/bootstrap.min.css') }}" >
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/thems.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/responsive.css') }}">
     <script language="javascript">
