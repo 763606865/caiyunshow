@@ -1,6 +1,8 @@
 body{font-family:"Microsoft Yahei";font-size:14px;color:#555; padding:0; margin:0;}
 input , textarea , select{font-family:"Microsoft Yahei"; color:#555; font-size:14px;}
 a{ color:#333; text-decoration:none}
+p { padding: 0; margin: 0; }
+
 a:hover{ color:#FFBF00;}
 /*头部*/
 .header{ width:100%; margin:0px auto; position:relative; height:120px; background:url(../images/bg_1.jpg) repeat-x; box-shadow:2px 2px 5px #666; z-index:99;}
@@ -216,6 +218,15 @@ a:hover{ color:#FFBF00;}
 .book_m ul li textarea{ width:580px; height:194px; border:1px solid #ddd; line-height:175%;}
 .book_m ul li input[type="submit"]{ width:100px; text-align:center; color:#fff; cursor:pointer; background-color:#0065E9; color:#FFFFFF; }
 
+.tab { position: fixed; top: 20%; right: 0; z-index:999; height:300px;}
+.tab .tab-wx { width:95px; background: #ffd142; display: flex; position: relative; cursor: pointer; }
+.tab .tab-wx .tab-main { width:95px; height:95px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content:space-between; align-items:center; }
+.tab .tab-wx .tab-main img { width: 70%; }
+.tab .tab-wx .tab-more{ width: 130px; height:168px; position: absolute; left:-140px; border: 1px solid #EBEBEB; display: none; background: #fff; }
+.tab-more-image { width:100px; margin: 10px auto 20px; }
+.tab .tab-wx .tab-more img{ width: 100%; }
+.tab .tab-wx .tab-more p{ text-align: center; }
+.tab .tab-wx:hover .tab-more{ display: block; }
 
 .p-t-box { width:1200px; margin: 20px auto; position: relative; display: block; padding: 10px 0; }
 .p-t-box .p-t-name { text-align: center; }

@@ -64,3 +64,4 @@
     </div>
 </div>
 <!--头部-->
+@include('web/public/tab')
