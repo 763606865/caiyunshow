@@ -17,4 +17,9 @@ class AuthService extends Service
         ];
         return RequestService::getInstance()->get('/sns/jscode2session', $reqData);
     }
+
+    public function token()
+    {
+        return RequestService::getInstance()->getToken();
+    }
 }
