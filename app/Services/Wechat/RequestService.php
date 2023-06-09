@@ -5,6 +5,7 @@ namespace App\Services\Wechat;
 use App\Services\RequestServiceInterface;
 use App\Services\Service;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
@@ -63,5 +64,52 @@ class RequestService extends Service implements RequestServiceInterface
             'secret' => config('wechat.weapp.business_card.app_secret'),
         ]);
         Redis::set('wechat_token', $response['access_token'], $response['expires_in']);
+    }
+
+    public function encrypt(string $url = '', array $reqData = [])
+    {
+        try {
+            $iv = base64_encode(generation_random_string(12));
+        } catch (\Exception $e) {
+            Log::error("【Wechat】generation iv error, message:". $e->getMessage());
+        }
+        $data = array_merge($reqData, [
+            '_n' => base64_encode(generation_random_string(12)),
+            '_appid' => config('wechat.weapp.business_card.app_id'),
+            '_timestamp' => time()
+        ]);
+        // 加密
+        $data = Crypt::encrypt($data);
+        dd($data);
+        $data = base64_encode($data);
+        $aad = [
+            'urlpath' => $url,
+            'appid' => config('wechat.weapp.business_card.app_id'),
+            'timestamp' => time(),
+            'sn' => config('wechat.weapp.business_card.crypt.sn')
+        ];
+        $aad = implode('|', $aad);
+
+        $authtag = base64_encode($aad);
+        return [
+            'iv' => $iv ?? '',
+            'data' => $data,
+            'authtag' => $authtag
+        ];
+    }
+
+    public function decrypt()
+    {
+
+    }
+
+    public function signature()
+    {
+
+    }
+
+    public function verify()
+    {
+
     }
 }

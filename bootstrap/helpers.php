@@ -3,7 +3,7 @@
 if (!function_exists('tree')) {
     function tree(array $data = [], string $parent_column = 'parent_id'): array
     {
-        return collect($data)->where($parent_column,0)->map(function ($item) use($parent_column, $data) {
+        return collect($data)->where($parent_column, 0)->map(function ($item) use ($parent_column, $data) {
             $item['children'] = collect($data)->where($parent_column, $item['id'])->toArray();
             return $item;
         })->toArray();
@@ -16,5 +16,41 @@ if (!function_exists('generation')) {
         foreach ($data as $value) {
             yield $value;
         }
+    }
+}
+
+if (!function_exists('generation_random_string')) {
+    /**
+     * @throws Exception
+     */
+    function generation_random_string(int $length = 1): string
+    {
+        $result = '';
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        for ($index = 0; $index < $length; $index++) {
+            $result .= $chars[random_int(0, strlen($chars) - 1)];
+        }
+        return $result;
+    }
+}
+if (!function_exists('api_response')) {
+    /**
+     * @throws Exception
+     */
+    function api_response($data = null, $status = 200, array $headers = [], $options = 0): \Illuminate\Http\JsonResponse
+    {
+        $now = microtime(true);
+        if ($data === null) {
+            $data = (object)[];
+        }
+        $rv = [
+            'code' => $status,
+            'data' => $data,
+            'meta' => [
+                'timestamp' => $now,
+                'response_time' => $now - LARAVEL_START,
+            ],
+        ];
+        return response()->json($rv, $status, $headers, $options);
     }
 }

@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group([
     'prefix' => '/business_card',
     'namespace' => 'App\\Api\\BusinessCard\\Controllers',
-], function (Router $router) {
+], static function (Router $router) {
 
     $router->group(['prefix' => '/auth'], function (Router $router) {
 
@@ -34,6 +34,6 @@ Route::group([
 
     });
 
-
+    $router->post('/test', 'IndexController@test');
 
 });
