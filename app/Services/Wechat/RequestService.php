@@ -80,7 +80,6 @@ class RequestService extends Service implements RequestServiceInterface
         ]);
         // 加密
         $data = Crypt::encrypt($data);
-        dd($data);
         $data = base64_encode($data);
         $aad = [
             'urlpath' => $url,
