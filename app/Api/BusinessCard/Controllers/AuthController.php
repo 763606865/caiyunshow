@@ -21,15 +21,14 @@ class AuthController extends Controller
         // 获取session
         $response = WechatAuthService::getInstance()->login($code);
 
-        // 设置session
-        $request->session()->put($response['session_key']);
-
-        if(isset($response['errcode'])) {
+        if (isset($response['errcode'])) {
             $data = [
                 'code' => $response['errcode'],
                 'message' => $response['errmsg']
             ];
         } else {
+            // 设置session
+            $request->session()->put($response['session_key']);
             $data = [
                 'code' => 200,
                 'data' => [
@@ -38,6 +37,7 @@ class AuthController extends Controller
                 ]
             ];
         }
+
         return response()->json($data);
     }
 }
