@@ -29,14 +29,18 @@ class RequestService extends Service implements RequestServiceInterface
         return $this->token;
     }
 
-    public function get(string $url = '', array $reqData = [], array $heads = [])
+    public function get(string $url = '', array $reqData = [], array $heads = [], bool $encrypt = true)
     {
-        return $this->request($url, 'GET', $reqData, $heads);
+        return $this->request($url, 'GET', $reqData, $heads, $encrypt);
     }
 
-    public function request(string $url = '', string $method = 'GET', array $reqData = [], array $heads = [])
+    public function request(string $url = '', string $method = 'GET', array $reqData = [], array $heads = [], bool $encrypt = true)
     {
         $client = new Client(['base_uri' => $this->host]);
+
+        if ($encrypt) {
+            $reqData = $this->encrypt($url, $reqData);
+        }
 
         $body = match ($method) {
             'GET' => [
@@ -51,7 +55,10 @@ class RequestService extends Service implements RequestServiceInterface
         Log::info('=======wechat request====== Method' . $method . ', uri: ' . $url . ', body:', $body);
         $response = $client->request($method, $url, $body);
         $responseArr = json_decode($response->getBody()->getContents(), true);
-        Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:' . $response->getBody()->getContents());
+        Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:' . $response->getBody());
+        if ($encrypt) {
+            $responseArr = $this->decrypt($url, $responseArr);
+        }
         return $responseArr;
     }
 
@@ -111,6 +118,9 @@ class RequestService extends Service implements RequestServiceInterface
      */
     public function decrypt(string $url = '', array $responseData = [])
     {
+        if(!isset($responseData['iv'])) {
+            return $responseData;
+        }
         if (!is_url($url)) {
             $url = $this->host . $url;
         }

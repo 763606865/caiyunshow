@@ -28,12 +28,11 @@ class AuthController extends Controller
             ];
         } else {
             // 设置session
-            $request->session()->put($response['session_key']);
+            session($response['session_key'], ['openid' => $response['openid']]);
             $data = [
                 'code' => 200,
                 'data' => [
-                    'session' => $response['session_key'],
-                    'openid' => $response['openid']
+                    'session' => $response['session_key']
                 ]
             ];
         }

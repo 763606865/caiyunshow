@@ -15,7 +15,7 @@ class AuthService extends Service
             'js_code' => $code,
             'grant_type' => 'authorization_code'
         ];
-        return RequestService::getInstance()->get('/sns/jscode2session', $reqData);
+        return RequestService::getInstance()->get('/sns/jscode2session', $reqData, [], false);
     }
 
     public function token()
