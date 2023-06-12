@@ -4,20 +4,28 @@ namespace App\Api\BusinessCard\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\Wechat\RequestService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
     /**
      * @throws \Exception
      */
-    public function test()
+    public function wechatEncrypt(Request $request): JsonResponse
     {
-        $data = RequestService::getInstance()->encrypt('https://api.weixin.qq.com/wxa/getuserriskrank', [
-            "appid" => "wxba6223c06417af7b",
-            "openid" =>  "oEWzBfmdLqhFS2mTXCo2E4Y9gJAM",
-            "scene" => 0,
-            "client_ip" => "127.0.0.1",
-        ]);
-        return api_response($data);
+        $reqData = $request->all();
+        $response = RequestService::getInstance()->encrypt('/wxa/getuserriskrank', $reqData);
+        return api_response($response);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function wechatDecrypt(Request $request): JsonResponse
+    {
+        $data = $request->all();
+        $response = RequestService::getInstance()->decrypt('/wxa/getuserriskrank', $data);
+        return api_response($response);
     }
 }

@@ -7,6 +7,7 @@ return [
             'app_secret' => env('WECHAT_BUSINESS_APP_SECRET'),
             'crypt' => [
                 'sn' => env('WECHAT_BUSINESS_CRYPT_SN'),
+                'key' => env('WECHAT_BUSINESS_CRYPT_KEY'),
             ],
         ],
     ],

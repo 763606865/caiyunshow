@@ -1,5 +1,6 @@
 <?php
 
+use App\Api\BusinessCard\Controllers\IndexController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-
 Route::group([
     'prefix' => '/business_card',
     'namespace' => 'App\\Api\\BusinessCard\\Controllers',
@@ -34,6 +34,11 @@ Route::group([
 
     });
 
-    $router->post('/test', 'IndexController@test');
 
+    $router->group(['prefix' => '/test'], function (Router $router) {
+        $router->group(['prefix' => '/wechat'], function (Router $router) {
+            $router->post('/encrypt', [IndexController::class, 'wechatEncrypt']);
+            $router->post('/decrypt', [IndexController::class, 'wechatDecrypt']);
+        });
+    });
 });

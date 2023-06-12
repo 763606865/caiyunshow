@@ -33,6 +33,7 @@ if (!function_exists('generation_random_string')) {
         return $result;
     }
 }
+
 if (!function_exists('api_response')) {
     /**
      * @throws Exception
@@ -52,5 +53,15 @@ if (!function_exists('api_response')) {
             ],
         ];
         return response()->json($rv, $status, $headers, $options);
+    }
+}
+
+if (!function_exists('is_url')) {
+    /**
+     * @throws Exception
+     */
+    function is_url(string $url): bool
+    {
+        return str_contains($url, "http");
     }
 }
