@@ -31,6 +31,8 @@ jobs:
         echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
         echo WECHAT_BUSINESS_APP_ID=${{ secrets.WECHAT_BUSINESS_APP_ID }} >> .env
         echo WECHAT_BUSINESS_APP_SECRET=${{ secrets.WECHAT_BUSINESS_APP_SECRET }} >> .env
+        echo WECHAT_BUSINESS_CRYPT_SN=${{ secrets.WECHAT_BUSINESS_CRYPT_SN }} >> .env
+        echo WECHAT_BUSINESS_CRYPT_KEY=${{ secrets.WECHAT_BUSINESS_CRYPT_KEY }} >> .env
         echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
         echo REDIS_USERNAME=${{ secrets.REDIS_USERNAME }} >> .env
     - name: Install Dependencies
