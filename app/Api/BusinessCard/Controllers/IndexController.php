@@ -15,7 +15,7 @@ class IndexController extends Controller
     public function wechatEncrypt(Request $request): JsonResponse
     {
         $reqData = $request->all();
-        $response = RequestService::getInstance()->encrypt('/wxa/getuserriskrank', $reqData);
+        $response = RequestService::getInstance()->post('/wxa/getuserriskrank', $reqData, [], true);
         return api_response($response);
     }
 

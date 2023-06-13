@@ -8,9 +8,9 @@ interface RequestServiceInterface
 
     public function encrypt(string $url, array $reqData);
 
-    public function decrypt(string $url, array $reqData);
+    public function decrypt(string $url, array $responseData);
 
-    public function signature();
+    public function signature(string $url, array $encrypt);
 
     public function verify();
 }

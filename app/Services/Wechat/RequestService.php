@@ -34,12 +34,25 @@ class RequestService extends Service implements RequestServiceInterface
         return $this->request($url, 'GET', $reqData, $heads, $encrypt);
     }
 
+    public function post(string $url = '', array $reqData = [], array $heads = [], bool $encrypt = true)
+    {
+        return $this->request($url, 'POST', $reqData, $heads, $encrypt);
+    }
+
     public function request(string $url = '', string $method = 'GET', array $reqData = [], array $heads = [], bool $encrypt = true)
     {
         $client = new Client(['base_uri' => $this->host]);
+        if (!is_url($url)) {
+            $url = $this->host . $url;
+        }
 
+        /** -------接口加密------- **/
         if ($encrypt) {
+            // 数据加密
             $reqData = $this->encrypt($url, $reqData);
+            // head加签
+            $signature = $this->signature($url, $reqData);
+            $heads = array_merge($heads, $signature);
         }
 
         $body = match ($method) {
@@ -56,6 +69,7 @@ class RequestService extends Service implements RequestServiceInterface
         $response = $client->request($method, $url, $body);
         $responseArr = json_decode($response->getBody()->getContents(), true);
         Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:' . $response->getBody());
+        /** -------接口解密------- **/
         if ($encrypt) {
             $responseArr = $this->decrypt($url, $responseArr);
         }
@@ -73,13 +87,12 @@ class RequestService extends Service implements RequestServiceInterface
     }
 
     /**
+     * 接口加密
+     *
      * @throws \Exception
      */
     public function encrypt(string $url = '', array $reqData = [])
     {
-        if (!is_url($url)) {
-            $url = $this->host . $url;
-        }
         $iv = openssl_random_pseudo_bytes(12);
         $data = array_merge($reqData, [
             '_n' => base64_encode(openssl_random_pseudo_bytes(16)),
@@ -114,15 +127,14 @@ class RequestService extends Service implements RequestServiceInterface
     }
 
     /**
+     * 接口解密
+     *
      * @throws \JsonException
      */
     public function decrypt(string $url = '', array $responseData = [])
     {
-        if(!isset($responseData['iv'])) {
+        if (!isset($responseData['iv'])) {
             return $responseData;
-        }
-        if (!is_url($url)) {
-            $url = $this->host . $url;
         }
         $iv = base64_decode($responseData['iv']);
         $authtag = base64_decode($responseData['authtag']);
@@ -162,13 +174,39 @@ class RequestService extends Service implements RequestServiceInterface
         return $result;
     }
 
-    public function signature()
+    /**
+     * 加签
+     *
+     * @param string $url
+     * @param array $encrypt
+     * @return array
+     * @throws \JsonException
+     */
+    public function signature(string $url = '', array $encrypt = [])
     {
-
+        $timestamp = time();
+        $params = [
+            'urlpath' => $url,
+            'appid' => config('wechat.weapp.business_card.app_id'),
+            'timestamp' => $timestamp,
+            'postdata' => json_encode($encrypt, JSON_THROW_ON_ERROR)
+        ];
+        $paramStr = implode("\n", $params);
+        $publicKey = file_get_contents(config('wechat.weapp.business_card.signature.public_key'));
+        openssl_public_encrypt($paramStr, $signature, $publicKey, OPENSSL_ALGO_SHA256);
+        return [
+            'Wechatmp-Appid' => config('wechat.weapp.business_card.app_id'),
+            'Wechatmp-TimeStamp' => $timestamp,
+            'Wechatmp-Signature' => base64_encode($signature)
+        ];
     }
 
-    public function verify()
+    /**
+     * 验签
+     *
+     */
+    public function verify(string $url = '', array $responseData = [])
     {
-
+        return true;
     }
 }

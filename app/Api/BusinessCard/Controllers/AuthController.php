@@ -10,9 +10,8 @@ class AuthController extends Controller
 {
     public function login()
     {
-        $data['code'] = 200;
-        $data['token'] = WechatAuthService::getInstance()->token();
-        return response()->json($data);
+        $data['access_token'] = WechatAuthService::getInstance()->token();
+        return api_response($data);
     }
 
     public function wechatLogin(Request $request)
