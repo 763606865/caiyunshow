@@ -31,21 +31,9 @@ class RequestService extends Service implements RequestServiceInterface
 
     public function get(string $url = '', array $reqData = [], array $heads = [], bool $encrypt = true)
     {
-        return $this->request($url, 'GET', $reqData, $heads, $encrypt);
-    }
-
-    public function post(string $url = '', array $reqData = [], array $heads = [], bool $encrypt = true)
-    {
-        return $this->request($url, 'POST', $reqData, $heads, $encrypt);
-    }
-
-    public function request(string $url = '', string $method = 'GET', array $reqData = [], array $heads = [], bool $encrypt = true)
-    {
-        $client = new Client(['base_uri' => $this->host]);
         if (!is_url($url)) {
             $url = $this->host . $url;
         }
-
         /** -------接口加密------- **/
         if ($encrypt) {
             // 数据加密
@@ -53,7 +41,50 @@ class RequestService extends Service implements RequestServiceInterface
             // head加签
             $signature = $this->signature($url, $reqData);
             $heads = array_merge($heads, $signature);
+            $url .= '?' . http_build_query(['access_token' => $this->getToken()]);
         }
+        $response = $this->request($url, 'GET', $reqData, $heads, $encrypt);
+        /** -------接口解密------- **/
+        if ($encrypt) {
+            $response = $this->decrypt($url, $response);
+        }
+        return $response;
+    }
+
+    public function post(string $url = '', array $reqData = [], array $heads = [], bool $encrypt = true)
+    {
+        if (!is_url($url)) {
+            $url = $this->host . $url;
+        }
+        Log::info('=======wechat request====== Method GET, uri: ' . $url . ', reqData:', $reqData);
+        /** -------接口加密------- **/
+        if ($encrypt) {
+            // 数据加密
+            $reqData = $this->encrypt($url, $reqData);
+            // head加签
+            $signature = $this->signature($url, $reqData);
+            $heads = array_merge($heads, $signature);
+            $url .= '?' . http_build_query(['access_token' => $this->getToken()]);
+        }
+        $response = $this->request($url, 'POST', $reqData, $heads, $encrypt);
+        /** -------接口解密------- **/
+        if ($encrypt) {
+            $response = $this->decrypt($url, $response);
+        }
+        if (isset($response['errcode']) && (int)$response['errcode'] === 42001) {
+            $this->setToken();
+            try {
+                $response = retry(1, fn() => $this->request($url, 'POST', $reqData, $heads, $encrypt), 100);
+            } catch (\Exception $e) {
+                Log::error("Retry Error:". $e->getMessage());
+            }
+        }
+        return $response;
+    }
+
+    public function request(string $url = '', string $method = 'GET', array $reqData = [], array $heads = [], bool $encrypt = true)
+    {
+        $client = new Client(['base_uri' => $this->host]);
 
         $body = match ($method) {
             'GET' => [
@@ -65,20 +96,16 @@ class RequestService extends Service implements RequestServiceInterface
                 'form_params' => $reqData
             ],
         };
-        Log::info('=======wechat request====== Method' . $method . ', uri: ' . $url . ', body:', $body);
+
         $response = $client->request($method, $url, $body);
         $responseArr = json_decode($response->getBody()->getContents(), true);
         Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:' . $response->getBody());
-        /** -------接口解密------- **/
-        if ($encrypt) {
-            $responseArr = $this->decrypt($url, $responseArr);
-        }
         return $responseArr;
     }
 
     public function setToken()
     {
-        $response = $this->get('/cgi-bin/token', [
+        $response = $this->request($this->host. '/cgi-bin/token','GET', [
             'grant_type' => 'client_credential',
             'appid' => config('wechat.weapp.business_card.app_id'),
             'secret' => config('wechat.weapp.business_card.app_secret'),
