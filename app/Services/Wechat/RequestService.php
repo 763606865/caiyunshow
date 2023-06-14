@@ -2,38 +2,40 @@
 
 namespace App\Services\Wechat;
 
-use App\Services\RequestServiceInterface;
 use App\Services\Service;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
-class RequestService extends Service implements RequestServiceInterface
+class RequestService extends Service
 {
     private string $host = 'https://api.weixin.qq.com';
-    public string $token = '';
-
-    public function token()
-    {
-        if (!$token = Redis::get('wechat_token')) {
-            $this->setToken();
-        } else {
-            $this->token = $token;
-        }
-        return $this;
-    }
 
     public function getToken()
     {
-        $this->token();
-        return $this->token;
+        if (!$token = Redis::get('wechat_token')) {
+            $token = $this->setToken();
+        }
+        return $token;
     }
 
-    public function get(string $url = '', array $reqData = [], array $heads = [], bool $encrypt = true)
+    public function get(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = true)
     {
-        if (!is_url($url)) {
-            $url = $this->host . $url;
-        }
+        return $this->request($uri, 'GET', $reqData, $heads, $encrypt);
+    }
+
+    public function post(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = true)
+    {
+        return $this->request($uri, 'POST', $reqData, $heads, $encrypt);
+    }
+
+    public function request(string $uri = '', string $method = 'GET', array $reqData = [], array $heads = [], bool $encrypt = true)
+    {
+        Log::info('=======wechat request====== Uri :' . $uri . ', Params:', $reqData);
+
+        /** -------url拼接------- **/
+        $url = is_url($uri) ? $uri : $this->host . $uri;
+
         /** -------接口加密------- **/
         if ($encrypt) {
             // 数据加密
@@ -41,50 +43,18 @@ class RequestService extends Service implements RequestServiceInterface
             // head加签
             $signature = $this->signature($url, $reqData);
             $heads = array_merge($heads, $signature);
-            $url .= '?' . http_build_query(['access_token' => $this->getToken()]);
         }
-        $response = $this->request($url, 'GET', $reqData, $heads, $encrypt);
-        /** -------接口解密------- **/
-        if ($encrypt) {
-            $response = $this->decrypt($url, $response);
-        }
-        return $response;
-    }
 
-    public function post(string $url = '', array $reqData = [], array $heads = [], bool $encrypt = true)
-    {
-        if (!is_url($url)) {
-            $url = $this->host . $url;
-        }
-        Log::info('=======wechat request====== Method GET, uri: ' . $url . ', reqData:', $reqData);
-        /** -------接口加密------- **/
-        if ($encrypt) {
-            // 数据加密
-            $reqData = $this->encrypt($url, $reqData);
-            // head加签
-            $signature = $this->signature($url, $reqData);
-            $heads = array_merge($heads, $signature);
-            $url .= '?' . http_build_query(['access_token' => $this->getToken()]);
-        }
-        $response = $this->request($url, 'POST', $reqData, $heads, $encrypt);
-        /** -------接口解密------- **/
-        if ($encrypt) {
-            $response = $this->decrypt($url, $response);
-        }
-        if (isset($response['errcode']) && (int)$response['errcode'] === 42001) {
-            $this->setToken();
-            try {
-                $response = retry(1, fn() => $this->request($url, 'POST', $reqData, $heads, $encrypt), 100);
-            } catch (\Exception $e) {
-                Log::error("Retry Error:". $e->getMessage());
+        $client = new Client();
+
+        /** -------token拼接------- **/
+        if (!in_array($uri, config('wechat.weapp.skip_token_url'), true)) {
+            if ($method === 'GET') {
+                $reqData = array_merge($reqData, ['access_token' => $this->getToken()]);
+            } else {
+                $url .= '?' . http_build_query(['access_token' => $this->getToken()]);
             }
         }
-        return $response;
-    }
-
-    public function request(string $url = '', string $method = 'GET', array $reqData = [], array $heads = [], bool $encrypt = true)
-    {
-        $client = new Client(['base_uri' => $this->host]);
 
         $body = match ($method) {
             'GET' => [
@@ -96,21 +66,26 @@ class RequestService extends Service implements RequestServiceInterface
                 'form_params' => $reqData
             ],
         };
-
         $response = $client->request($method, $url, $body);
-        $responseArr = json_decode($response->getBody()->getContents(), true);
-        Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:' . $response->getBody());
+        $responseArr = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        /** -------接口解密------- **/
+        if ($encrypt) {
+            $responseArr = $this->decrypt($url, $responseArr);
+        }
+
+        Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:', $responseArr);
         return $responseArr;
     }
 
     public function setToken()
     {
-        $response = $this->request($this->host. '/cgi-bin/token','GET', [
+        $response = $this->get('/cgi-bin/token', [
             'grant_type' => 'client_credential',
             'appid' => config('wechat.weapp.business_card.app_id'),
             'secret' => config('wechat.weapp.business_card.app_secret'),
-        ]);
-        Redis::set('wechat_token', $response['access_token'], $response['expires_in']);
+        ], [], false);
+        Redis::connection()->set('wechat_token', $response['access_token'])->expire('wechat_token', (int)$response['expires_in']-10);
+        return $response['access_token'];
     }
 
     /**
@@ -134,7 +109,6 @@ class RequestService extends Service implements RequestServiceInterface
             'sn' => config('wechat.weapp.business_card.crypt.sn')
         ];
         $aad = implode('|', $aad);
-
         // 计算data
         $encrypt = openssl_encrypt(
             json_encode($data, JSON_THROW_ON_ERROR),
@@ -219,12 +193,14 @@ class RequestService extends Service implements RequestServiceInterface
             'postdata' => json_encode($encrypt, JSON_THROW_ON_ERROR)
         ];
         $paramStr = implode("\n", $params);
+        $privateKey = file_get_contents(config('wechat.weapp.business_card.signature.private_key'));
         $publicKey = file_get_contents(config('wechat.weapp.business_card.signature.public_key'));
-        openssl_public_encrypt($paramStr, $signature, $publicKey, OPENSSL_ALGO_SHA256);
+        openssl_sign($paramStr, $signature, $privateKey, OPENSSL_ALGO_SHA256);
         return [
             'Wechatmp-Appid' => config('wechat.weapp.business_card.app_id'),
             'Wechatmp-TimeStamp' => $timestamp,
-            'Wechatmp-Signature' => base64_encode($signature)
+            'Wechatmp-Signature' => base64_encode($signature),
+            'Wechatmp-Serial' => config('wechat.weapp.business_card.signature.serial'),
         ];
     }
 

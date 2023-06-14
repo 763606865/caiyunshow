@@ -14,28 +14,34 @@ class AuthController extends Controller
         return api_response($data);
     }
 
-    public function wechatLogin(Request $request)
+    public function wechatLogin(Request $request): \Illuminate\Http\JsonResponse
     {
         $code = $request->post('code');
-        // 获取session
+        // 获取openId
         $response = WechatAuthService::getInstance()->login($code);
 
         if (isset($response['errcode'])) {
-            $data = [
+            return api_response([
                 'code' => $response['errcode'],
                 'message' => $response['errmsg']
-            ];
-        } else {
-            // 设置session
-            session($response['session_key'], ['openid' => $response['openid']]);
-            $data = [
-                'code' => 200,
-                'data' => [
-                    'session' => $response['session_key']
-                ]
-            ];
+            ]);
         }
+        /** 获取用户信息同步本地数据库 **/
+        $wechatResponse = [
+            'open_id' => $response['openid'] ?? '',
+            'union_id' => $response['union_id'] ?? ''
+        ];
+        $user = WechatAuthService::getInstance()->attach($wechatResponse);
 
-        return response()->json($data);
+        return api_response([
+            'session_key' => $response['session_key'],
+            'user' => $user
+        ]);
+    }
+
+    public function user(Request $request)
+    {
+        $sessionId = $request->header('X-Wechat-SessionId');
+        $user = session($sessionId);
     }
 }

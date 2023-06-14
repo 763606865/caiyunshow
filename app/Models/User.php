@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,10 +17,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'username',
         'name',
+        'mobile',
         'email',
         'password',
-        'wechat'
     ];
 
     /**
@@ -42,4 +42,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $attributes = [
+        'username' => '',
+        'name' => '',
+        'mobile' => '',
+        'email' => '',
+        'wechat_open_id' => '',
+        'wechat_union_id' => '',
+        'password' => ''
+    ];
+
+    public function UserUniqueMobile(string $mobile)
+    {
+        return $this->where('mobile', $mobile);
+    }
 }

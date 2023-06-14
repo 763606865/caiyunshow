@@ -37,6 +37,7 @@ jobs:
         echo WECHAT_BUSINESS_SIGNATURE_PRIVATE_KEY=${{ secrets.WECHAT_BUSINESS_SIGNATURE_PRIVATE_KEY }} >> .env
         echo WECHAT_BUSINESS_SIGNATURE_PUBLIC_KEY=${{ secrets.WECHAT_BUSINESS_SIGNATURE_PUBLIC_KEY }} >> .env
         echo WECHAT_BUSINESS_SIGNATURE_AUTH_CER=${{ secrets.WECHAT_BUSINESS_SIGNATURE_AUTH_CER }} >> .env
+        echo WECHAT_BUSINESS_SIGNATURE_SERIAL=${{ secrets.WECHAT_BUSINESS_SIGNATURE_SERIAL }} >> .env
         echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
         echo REDIS_USERNAME=${{ secrets.REDIS_USERNAME }} >> .env
     - name: Install Dependencies

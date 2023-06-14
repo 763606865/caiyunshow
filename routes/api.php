@@ -1,5 +1,6 @@
 <?php
 
+use App\Api\BusinessCard\Controllers\AuthController;
 use App\Api\BusinessCard\Controllers\IndexController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
@@ -41,4 +42,7 @@ Route::group([
             $router->post('/decrypt', [IndexController::class, 'wechatDecrypt']);
         });
     });
+
+    $router->post('/test', [IndexController::class, 'test']);
+    $router->get('/user', [AuthController::class, 'user']);
 });
