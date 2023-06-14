@@ -194,7 +194,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Overtrue\LaravelWeChat\ServiceProvider::class,
 
     ],
 
@@ -211,7 +210,6 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-        'EasyWeChat' => Overtrue\LaravelWeChat\Facade::class,
     ])->toArray(),
 
 ];
