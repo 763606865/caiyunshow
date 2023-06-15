@@ -2,10 +2,11 @@
 
 namespace App\Services\Wechat;
 
+use App\Models\AccessToken;
 use App\Services\Service;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 
 class RequestService extends Service
 {
@@ -13,10 +14,14 @@ class RequestService extends Service
 
     public function getToken()
     {
-        if (!$token = Redis::get('wechat_token')) {
-            $token = $this->setToken();
+        $token = AccessToken::wechat()->latest()->first();
+        if (!$token) {
+            return $this->setToken();
         }
-        return $token;
+        if ((int)$token->expired_ts <= Carbon::now()->timestamp) {
+            return $this->setToken();
+        }
+        return $token->access_token;
     }
 
     public function get(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = true)
@@ -84,7 +89,11 @@ class RequestService extends Service
             'appid' => config('wechat.weapp.business_card.app_id'),
             'secret' => config('wechat.weapp.business_card.app_secret'),
         ], [], false);
-        Redis::connection()->set('wechat_token', $response['access_token'])->expire('wechat_token', (int)$response['expires_in']-10);
+        AccessToken::forceCreate([
+            'access_token' => $response['access_token'],
+            'expired_ts' => Carbon::now()->addSeconds($response['expires_in'])->timestamp,
+            'type' => AccessToken::TYPE_WECHAT
+        ]);
         return $response['access_token'];
     }
 
@@ -192,24 +201,14 @@ class RequestService extends Service
             'timestamp' => $timestamp,
             'postdata' => json_encode($encrypt, JSON_THROW_ON_ERROR)
         ];
-        $paramStr = implode("\n", $params);
-        $privateKey = file_get_contents(config('wechat.weapp.business_card.signature.private_key'));
-        $publicKey = file_get_contents(config('wechat.weapp.business_card.signature.public_key'));
-        openssl_sign($paramStr, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        $payload = implode("\n", array_values($params));
+        $publicKey = openssl_pkey_get_public(file_get_contents(config('wechat.weapp.business_card.signature.public_key')));
+        openssl_public_encrypt($payload, $signature, $publicKey);
         return [
             'Wechatmp-Appid' => config('wechat.weapp.business_card.app_id'),
             'Wechatmp-TimeStamp' => $timestamp,
             'Wechatmp-Signature' => base64_encode($signature),
             'Wechatmp-Serial' => config('wechat.weapp.business_card.signature.serial'),
         ];
-    }
-
-    /**
-     * 验签
-     *
-     */
-    public function verify(string $url = '', array $responseData = [])
-    {
-        return true;
     }
 }
