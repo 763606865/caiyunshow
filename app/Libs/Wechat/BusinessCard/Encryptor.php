@@ -7,25 +7,30 @@ use Illuminate\Support\Facades\Log;
 
 class Encryptor extends BaseEncryptor
 {
-    public function encrypt(string $url = '', array $reqData = [])
+    public function encrypt(string $url = '', array $reqData = [], int $timestamp = 0): array
     {
+        if (!$timestamp) {
+            $timestamp = time();
+        }
         $iv = generation_random_string(12);
         $data = array_merge($reqData, [
-            '_n' => base64_encode(generation_random_string(16)),
+            '_n' => generation_random_string(random_int(16, 32)),
             '_appid' => $this->appId,
-            '_timestamp' => time()
+            '_timestamp' => $timestamp
         ]);
+        ksort($data);
+        $data = json_encode($data, JSON_THROW_ON_ERROR);
         // 加密
         $aad = [
             'urlpath' => $url,
             'appid' => $this->appId,
-            'timestamp' => time(),
+            'timestamp' => $timestamp,
             'sn' => $this->encryptSn
         ];
         $aad = implode('|', $aad);
         // 计算data
         $encrypt = openssl_encrypt(
-            json_encode($data, JSON_THROW_ON_ERROR),
+            $data,
             'aes-256-gcm',
             $this->encryptKey,
             OPENSSL_RAW_DATA,
@@ -41,8 +46,12 @@ class Encryptor extends BaseEncryptor
         ];
     }
 
-    public function decrypt(string $url = '', array $responseData = [])
+    public function decrypt(string $url = '', array $responseData = [], int $timestamp = 0)
     {
+        if (!$timestamp) {
+            $timestamp = time();
+        }
+
         if (!isset($responseData['iv'])) {
             return $responseData;
         }
@@ -53,7 +62,7 @@ class Encryptor extends BaseEncryptor
         $aad = [
             'urlpath' => $url,
             'appid' => $this->appId,
-            'timestamp' => time(),
+            'timestamp' => $timestamp,
             'sn' => $this->encryptSn
         ];
         $aad = implode('|', $aad);
@@ -75,12 +84,36 @@ class Encryptor extends BaseEncryptor
             return [];
         }
 
-        if ($result["_timestamp"] !== time()) {
+        if ($result["_timestamp"] !== $timestamp) {
             Log::error("【wechat】校验失败：时间戳对不上:", (array)$result);
             return [];
         }
         unset($result['_appid'], $result['_timestamp'], $result['_n']);
 
         return $result;
+    }
+
+    public function signature(string $url = '', array $encrypt = [], int $timestamp = 0)
+    {
+        if (!$timestamp) {
+            $timestamp = time();
+        }
+        $params = [
+            'urlpath' => $url,
+            'appid' => $this->appId,
+            'timestamp' => $timestamp,
+            'postdata' => json_encode($encrypt, JSON_THROW_ON_ERROR)
+        ];
+        $payload = implode("\n", array_values($params));
+        $privateKey = openssl_pkey_get_private(file_get_contents($this->privateKey));
+//        $publicKey = openssl_pkey_get_public(file_get_contents($this->publicKey));
+//        openssl_public_encrypt($payload, $signature, $publicKey);
+        openssl_sign($payload, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        return [
+            'Wechatmp-Appid' => $this->appId,
+            'Wechatmp-TimeStamp' => $timestamp,
+            'Wechatmp-Signature' => base64_encode($signature),
+            'Wechatmp-Serial' => $this->serial,
+        ];
     }
 }

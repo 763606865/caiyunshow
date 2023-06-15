@@ -8,8 +8,11 @@ class Encryptor implements EncryptorInterface
     protected string $appId;
     protected string $encryptKey;
     protected string $encryptSn;
+    protected string $privateKey;
+    protected string $publicKey;
+    protected string $serial;
 
-    public function __construct(mixed $config)
+    public function __construct(mixed $config = '')
     {
         $this->config = [];
         if (is_string($config)) {
@@ -19,8 +22,11 @@ class Encryptor implements EncryptorInterface
             $this->config = $config;
         }
         $this->appId = $this->config['app_id'];
-        $this->encryptKey = $this->config['crypt']['key'];
-        $this->encryptSn = $this->config['crypt']['sn'];
+        $this->encryptKey = $this->config['crypt']['key'] ?? '';
+        $this->encryptSn = $this->config['crypt']['sn'] ?? '';
+        $this->privateKey = $this->config['signature']['private_key'] ?? '';
+        $this->publicKey = $this->config['signature']['public_key'] ?? '';
+        $this->serial = $this->config['signature']['serial'] ?? '';
     }
 
     public function encrypt()

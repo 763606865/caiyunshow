@@ -20,9 +20,6 @@ if (!function_exists('generation')) {
 }
 
 if (!function_exists('generation_random_string')) {
-    /**
-     * @throws Exception
-     */
     function generation_random_string(int $length = 1): string
     {
         $result = '';
