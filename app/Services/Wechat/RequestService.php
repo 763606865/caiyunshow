@@ -2,6 +2,7 @@
 
 namespace App\Services\Wechat;
 
+use App\Libs\Wechat\BusinessCard\Encryptor;
 use App\Models\AccessToken;
 use App\Services\Service;
 use Carbon\Carbon;
@@ -44,7 +45,7 @@ class RequestService extends Service
         /** -------接口加密------- **/
         if ($encrypt) {
             // 数据加密
-            $reqData = $this->encrypt($url, $reqData);
+            $reqData = (new Encryptor)->encrypt($url, $reqData);
             // head加签
             $signature = $this->signature($url, $reqData);
             $heads = array_merge($heads, $signature);
@@ -71,11 +72,12 @@ class RequestService extends Service
                 'form_params' => $reqData
             ],
         };
+        Log::info("\nMethod:" . $method . "\nUrl: ".$url . "\nBody: ", $body);
         $response = $client->request($method, $url, $body);
         $responseArr = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         /** -------接口解密------- **/
         if ($encrypt) {
-            $responseArr = $this->decrypt($url, $responseArr);
+            $responseArr = (new Encryptor)->decrypt($url, $responseArr);
         }
 
         Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:', $responseArr);
@@ -98,93 +100,6 @@ class RequestService extends Service
     }
 
     /**
-     * 接口加密
-     *
-     * @throws \Exception
-     */
-    public function encrypt(string $url = '', array $reqData = [])
-    {
-        $iv = openssl_random_pseudo_bytes(12);
-        $data = array_merge($reqData, [
-            '_n' => base64_encode(openssl_random_pseudo_bytes(16)),
-            '_appid' => config('wechat.weapp.business_card.app_id'),
-            '_timestamp' => time()
-        ]);
-        // 加密
-        $aad = [
-            'urlpath' => $url,
-            'appid' => config('wechat.weapp.business_card.app_id'),
-            'timestamp' => time(),
-            'sn' => config('wechat.weapp.business_card.crypt.sn')
-        ];
-        $aad = implode('|', $aad);
-        // 计算data
-        $encrypt = openssl_encrypt(
-            json_encode($data, JSON_THROW_ON_ERROR),
-            'aes-256-gcm',
-            config('wechat.weapp.business_card.crypt.key'),
-            OPENSSL_RAW_DATA,
-            $iv,
-            $tag,
-            $aad
-        );
-
-        return [
-            'iv' => base64_encode($iv),
-            'data' => base64_encode($encrypt),
-            'authtag' => base64_encode($tag)
-        ];
-    }
-
-    /**
-     * 接口解密
-     *
-     * @throws \JsonException
-     */
-    public function decrypt(string $url = '', array $responseData = [])
-    {
-        if (!isset($responseData['iv'])) {
-            return $responseData;
-        }
-        $iv = base64_decode($responseData['iv']);
-        $authtag = base64_decode($responseData['authtag']);
-        $data = base64_decode($responseData['data']);
-
-        $aad = [
-            'urlpath' => $url,
-            'appid' => config('wechat.weapp.business_card.app_id'),
-            'timestamp' => time(),
-            'sn' => config('wechat.weapp.business_card.crypt.sn')
-        ];
-        $aad = implode('|', $aad);
-
-        $result = openssl_decrypt(
-            $data,
-            'aes-256-gcm',
-            config('wechat.weapp.business_card.crypt.key'),
-            OPENSSL_RAW_DATA,
-            $iv,
-            $authtag,
-            $aad
-        );
-        // 校验
-        $result = json_decode($result, true);
-
-        if ((string)$result['_appid'] !== config('wechat.weapp.business_card.app_id')) {
-            Log::error("【wechat】校验失败：appId校验失败:", (array)$result);
-            return [];
-        }
-
-        if ($result["_timestamp"] !== time()) {
-            Log::error("【wechat】校验失败：时间戳对不上:", (array)$result);
-            return [];
-        }
-        unset($result['_appid'], $result['_timestamp'], $result['_n']);
-
-        return $result;
-    }
-
-    /**
      * 加签
      *
      * @param string $url
@@ -202,8 +117,10 @@ class RequestService extends Service
             'postdata' => json_encode($encrypt, JSON_THROW_ON_ERROR)
         ];
         $payload = implode("\n", array_values($params));
-        $publicKey = openssl_pkey_get_public(file_get_contents(config('wechat.weapp.business_card.signature.public_key')));
-        openssl_public_encrypt($payload, $signature, $publicKey);
+        $privateKey = openssl_pkey_get_private(file_get_contents(config('wechat.weapp.business_card.signature.private_key')));
+//        $publicKey = openssl_pkey_get_public(file_get_contents(config('wechat.weapp.business_card.signature.public_key')));
+//        openssl_public_encrypt($payload, $signature, $publicKey);
+        openssl_sign($payload, $signature, $privateKey, OPENSSL_ALGO_SHA256);
         return [
             'Wechatmp-Appid' => config('wechat.weapp.business_card.app_id'),
             'Wechatmp-TimeStamp' => $timestamp,
