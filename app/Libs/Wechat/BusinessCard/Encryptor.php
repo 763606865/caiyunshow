@@ -106,9 +106,28 @@ class Encryptor extends BaseEncryptor
         ];
         $payload = implode("\n", array_values($params));
         $privateKey = openssl_pkey_get_private(file_get_contents($this->privateKey));
-//        $publicKey = openssl_pkey_get_public(file_get_contents($this->publicKey));
-//        openssl_public_encrypt($payload, $signature, $publicKey);
         openssl_sign($payload, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        return [
+            'Wechatmp-Appid' => $this->appId,
+            'Wechatmp-TimeStamp' => $timestamp,
+            'Wechatmp-Signature' => base64_encode($signature),
+        ];
+    }
+
+    public function verify(string $url = '', array $encrypt = [], int $timestamp = 0)
+    {
+        if (!$timestamp) {
+            $timestamp = time();
+        }
+        $params = [
+            'urlpath' => $url,
+            'appid' => $this->appId,
+            'timestamp' => $timestamp,
+            'postdata' => json_encode($encrypt, JSON_THROW_ON_ERROR)
+        ];
+        $payload = implode("\n", array_values($params));
+        $publicKey = openssl_pkey_get_public(file_get_contents($this->publicKey));
+        openssl_public_encrypt($payload, $signature, $publicKey);
         return [
             'Wechatmp-Appid' => $this->appId,
             'Wechatmp-TimeStamp' => $timestamp,

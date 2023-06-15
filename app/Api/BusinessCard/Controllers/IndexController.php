@@ -3,7 +3,6 @@
 namespace App\Api\BusinessCard\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Services\UserService;
 use App\Services\Wechat\RequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,7 +35,8 @@ class IndexController extends Controller
     public function test(Request $request): JsonResponse
     {
         $data = $request->all();
-        $response = UserService::getInstance()->store($data);
+        $response = RequestService::getInstance()->post('/wxa/getpaidunionid', $data);
+//        $response = UserService::getInstance()->store($data);
         return api_response($response);
     }
 }

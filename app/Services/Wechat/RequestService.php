@@ -13,6 +13,21 @@ class RequestService extends Service
 {
     private string $host = 'https://api.weixin.qq.com';
 
+    public function setToken()
+    {
+        $response = $this->get('/cgi-bin/token', [
+            'grant_type' => 'client_credential',
+            'appid' => config('wechat.weapp.business_card.app_id'),
+            'secret' => config('wechat.weapp.business_card.app_secret'),
+        ], [], false);
+        AccessToken::forceCreate([
+            'access_token' => $response['access_token'],
+            'expired_ts' => Carbon::now()->addSeconds($response['expires_in'])->timestamp,
+            'type' => AccessToken::TYPE_WECHAT
+        ]);
+        return $response['access_token'];
+    }
+
     public function getToken()
     {
         $token = AccessToken::wechat()->latest()->first();
@@ -25,12 +40,12 @@ class RequestService extends Service
         return $token->access_token;
     }
 
-    public function get(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = true)
+    public function get(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = false)
     {
         return $this->request($uri, 'GET', $reqData, $heads, $encrypt);
     }
 
-    public function post(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = true)
+    public function post(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = false)
     {
         return $this->request($uri, 'POST', $reqData, $heads, $encrypt);
     }
@@ -83,20 +98,5 @@ class RequestService extends Service
 
         Log::info('=======wechat response====== Status:' . $response->getStatusCode() . ', body:', $responseArr);
         return $responseArr;
-    }
-
-    public function setToken()
-    {
-        $response = $this->get('/cgi-bin/token', [
-            'grant_type' => 'client_credential',
-            'appid' => config('wechat.weapp.business_card.app_id'),
-            'secret' => config('wechat.weapp.business_card.app_secret'),
-        ], [], false);
-        AccessToken::forceCreate([
-            'access_token' => $response['access_token'],
-            'expired_ts' => Carbon::now()->addSeconds($response['expires_in'])->timestamp,
-            'type' => AccessToken::TYPE_WECHAT
-        ]);
-        return $response['access_token'];
     }
 }
