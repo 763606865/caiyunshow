@@ -32,6 +32,7 @@ Route::group([
         $router->post('/login', 'AuthController@login')->name('login');
 
         $router->post('/wechat/login', 'AuthController@wechatLogin')->name('wechat_login');
+        $router->post('/wechat/user', 'AuthController@user')->name('wechat_user_sync');
 
     });
 

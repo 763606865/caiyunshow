@@ -3,6 +3,7 @@
 namespace App\Api\BusinessCard\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Libs\Jwt\TokenBuilder;
 use App\Services\Wechat\AuthService as WechatAuthService;
 use Illuminate\Http\Request;
 
@@ -33,15 +34,18 @@ class AuthController extends Controller
         ];
         $user = WechatAuthService::getInstance()->attach($wechatResponse);
 
+        /** 生成token **/
+        $access_token = (new TokenBuilder)->generate($user->id, $response['session_key']);
+
         return api_response([
-            'session_key' => $response['session_key'],
-            'user' => $user
+            'access_token' => $access_token
         ]);
     }
 
     public function user(Request $request)
     {
-        $sessionId = $request->header('X-Wechat-SessionId');
-        $user = session($sessionId);
+        $access_token = $request->header('X-Wechat-Authorization');
+        $user = (new TokenBuilder)->parse($access_token);
+        return api_response($user);
     }
 }
