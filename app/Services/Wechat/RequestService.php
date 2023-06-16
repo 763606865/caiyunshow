@@ -40,13 +40,15 @@ class RequestService extends Service
         return $token->access_token;
     }
 
-    public function get(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = false)
+    public function get(string $uri = '', array $reqData = [], array $heads = [])
     {
+        $encrypt = env('WECHAT_BUSINESS_CRYPT_ENABLE', true);
         return $this->request($uri, 'GET', $reqData, $heads, $encrypt);
     }
 
-    public function post(string $uri = '', array $reqData = [], array $heads = [], bool $encrypt = false)
+    public function post(string $uri = '', array $reqData = [], array $heads = [])
     {
+        $encrypt = env('WECHAT_BUSINESS_CRYPT_ENABLE', true);
         return $this->request($uri, 'POST', $reqData, $heads, $encrypt);
     }
 
