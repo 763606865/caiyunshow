@@ -20,7 +20,7 @@ class TokenBuilder
     {
     }
 
-    public function generate(int $user_id, string $session_key): string
+    public function generate(int $user_id): string
     {
         $tokenBuilder = (new Builder(new JoseEncoder(), ChainedFormatter::default()));
         $now = new DateTimeImmutable();
@@ -30,7 +30,6 @@ class TokenBuilder
             ->canOnlyBeUsedAfter($now->modify('+2 minute'))
             ->expiresAt($now->modify('+1 hour'))
             ->withClaim('user_id', $user_id)
-            ->withClaim('session_key', $session_key)
             ->getToken(new Sha256(), InMemory::plainText(random_bytes(32)));
 
         return $token->toString();
@@ -42,12 +41,7 @@ class TokenBuilder
 
         $token = $parser->parse($access_token);
 
-        $user_id = $token->claims()->get('user_id');
-
-        $user = User::findOrFail($user_id);
-        $user->session_key = $token->claims()->get('session_key', '');
-
-        return $user;
+        return $token->claims()->get('user_id');
     }
 
     public function verify(string $access_token): void

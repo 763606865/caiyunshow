@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar', 255)->comment('头像地址');
+            $table->string('avatar', 255)->nullable()->after('email')->comment('头像地址');
         });
     }
 

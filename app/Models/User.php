@@ -50,11 +50,7 @@ class User extends Authenticatable
         'email' => '',
         'wechat_open_id' => '',
         'wechat_union_id' => '',
-        'password' => ''
+        'password' => '',
+        'avatar' => ''
     ];
-
-    public function UserUniqueMobile(string $mobile)
-    {
-        return $this->where('mobile', $mobile);
-    }
 }

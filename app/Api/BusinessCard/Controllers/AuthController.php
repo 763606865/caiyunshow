@@ -2,17 +2,61 @@
 
 namespace App\Api\BusinessCard\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Libs\Jwt\TokenBuilder;
+use App\Services\AuthService;
 use App\Services\Wechat\AuthService as WechatAuthService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function login()
+    public function login(Request $request)
     {
-        $data['access_token'] = WechatAuthService::getInstance()->token();
-        return api_response($data);
+        $validator = Validator::make($request->all(), [
+            'username' => ['nullable'],
+            'mobile' => ['nullable'],
+            'email' => ['nullable'],
+            'wechat_open_id' => ['nullable'],
+            'password' => ['nullable'],
+            'verify_code' => ['nullable'],
+        ],[],[
+            'username' => '账号',
+            'mobile' => '手机号',
+            'email' => '邮箱',
+            'password' => '密码',
+            'verify_code' => '验证码',
+        ]);
+        $validated = $validator->validated();
+        // 账号密码登录
+        if (isset($validated['username'])) {
+            $access_token = AuthService::getInstance()->loginByUserName($validated['username'], $validated['password']);
+            if(!$access_token) {
+                return api_response('登录失败！');
+            }
+            return api_response([
+                'access_token' => $access_token
+            ]);
+        }
+
+        if (isset($validated['mobile'])) {
+            $access_token = AuthService::getInstance()->loginByMobile($validated['mobile'], $validated['verify_code']);
+            if(!$access_token) {
+                return api_response('登录失败！');
+            }
+            return api_response([
+                'access_token' => $access_token
+            ]);
+        }
+
+        if (isset($validated['email'])) {
+            $access_token = AuthService::getInstance()->loginByEmail($validated['email'], $validated['verify_code']);
+            if(!$access_token) {
+                return api_response('登录失败！');
+            }
+            return api_response([
+                'access_token' => $access_token
+            ]);
+        }
+        return api_response('登录失败！');
     }
 
     public function wechatLogin(Request $request): \Illuminate\Http\JsonResponse
@@ -35,17 +79,10 @@ class AuthController extends Controller
         $user = WechatAuthService::getInstance()->attach($wechatResponse);
 
         /** 生成token **/
-        $access_token = (new TokenBuilder)->generate($user->id, $response['session_key']);
+        $access_token = $this->guard()->login($user);
 
         return api_response([
             'access_token' => $access_token
         ]);
-    }
-
-    public function user(Request $request)
-    {
-        $access_token = $request->header('X-Wechat-Authorization');
-        $user = (new TokenBuilder)->parse($access_token);
-        return api_response($user);
     }
 }

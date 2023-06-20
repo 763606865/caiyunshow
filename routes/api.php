@@ -32,9 +32,14 @@ Route::group([
         $router->post('/login', 'AuthController@login')->name('login');
 
         $router->post('/wechat/login', 'AuthController@wechatLogin')->name('wechat_login');
-        $router->post('/wechat/user', 'AuthController@user')->name('wechat_user_sync');
-
     });
+
+    // 用户信息
+    $router->group(['prefix' => '/user'], function (Router $router) {
+        $router->group(['prefix' => '/wechat'], function (Router $router) {
+            $router->post('/sync', 'UserController@wechatSync')->name('wechat_sync');
+        });
+    })->middleware('auth');
 
 
     $router->group(['prefix' => '/test'], function (Router $router) {

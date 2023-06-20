@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserService extends Service
 {
@@ -26,50 +27,102 @@ class UserService extends Service
         /** -- 排重 -- **/
         $user = new User();
         // 手机查重
-        $user->UserUniqueMobile($data['mobile']);
-        // 用户名查重
-        $user = $this->UserNameUniqueMobile();
-        // 邮箱查重
-        $user = $this->EmailUniqueMobile();
-        // 微信查重
-        $user = $this->UserUniqueWechat($data);
-
-        if (!$user) {
-            User::query()->create($data);
-        } else {
-            $user->forceFill($data);
-            $user->save();
+        if($this->UserUniqueMobile($data)) {
+            $user = User::query()->where('mobile', $data['mobile'])->first();
         }
+        // 用户名查重
+        if($this->UserUniqueUserName($data)) {
+            $user = User::query()->where('username', $data['username'])->first();
+        }
+        // 邮箱查重
+        if($this->EmailUniqueMobile($data)) {
+            $user = User::query()->where('email', $data['email'])->first();
+        }
+        // 微信查重
+        if($this->UserUniqueWechat($data)) {
+            $user = User::query()->where('wechat_open_id', $data['wechat_open_id'])->first();
+        }
+
+        $user->forceFill($data);
+        $user->save();
+        return $user;
     }
 
-    protected function UserUniqueWechat(array $data = [])
+    public function sync(User $user, array $data = [])
+    {
+        $first = $user;
+        if ($this->UserUniqueWechat($data)) {
+            $first = User::query()->where('wechat_open_id', $data['wechat_open_id'])->firstOrFail();
+        }
+
+        if ($this->UserUniqueUserName($data)) {
+            $first = User::query()->where('username', $data['username'])->firstOrFail();
+        }
+
+        if ($this->EmailUniqueMobile($data)) {
+            $first = User::query()->where('email', $data['email'])->firstOrFail();
+        }
+
+        if ($this->UserUniqueMobile($data)) {
+            $first = User::query()->where('mobile', $data['mobile'])->firstOrFail();
+        }
+        $this->syncData($user, $first, $data);
+    }
+
+    protected function UserUniqueWechat(array $data = []): bool
     {
         if (isset($data['wechat_open_id']) && $data['wechat_open_id'])
         {
-            return user::query()->where('wechat_open_id', $data['wechat_open_id'])->first();
+            return User::query()->where('wechat_open_id', $data['wechat_open_id'])->limit(1)->count() > 0;
         }
 
-        if (isset($data['wechat_union_id']) && $data['wechat_union_id'])
-        {
-            return user::query()->where('wechat_union_id', $data['wechat_union_id'])->first();
-        }
-
-        return null;
+        return false;
     }
 
-    protected function UserUniqueMobile(array $data = [])
+    protected function UserUniqueUserName(array $data = []): bool
+    {
+        if (isset($data['username']) && $data['username'])
+        {
+            return User::query()->where('username', $data['username'])->limit(1)->count() > 0;
+        }
+
+        return false;
+    }
+
+    protected function UserUniqueMobile(array $data = []): bool
     {
         if (isset($data['mobile']) && $data['mobile'])
         {
-            return user::query()->where('mobile', $data['mobile'])->first();
+            return User::query()->where('mobile', $data['mobile'])->limit(1)->count() > 0;
         }
 
-        return null;
+        return false;
     }
 
-    protected function EmailUniqueMobile()
+    protected function EmailUniqueMobile(array $data = []): bool
     {
+        if (isset($data['email']) && $data['email'])
+        {
+            return User::query()->where('email', $data['email'])->limit(1)->count() > 0;
+        }
 
+        return false;
+    }
+
+    private function syncData($user, $first, $data)
+    {
+        if ($first->id === $user->id) {
+            $user->forceFill($data);
+            $user->save();
+        } else {
+            DB::transaction(static function () use($user, $first, $data) {
+                $user->forceFill($data);
+                $user->setVisible(['username', 'name', 'mobile', 'email', 'wechat_open_id', 'wechat_union_id', 'password', 'avatar']);
+                $first->forceFill($user->toArray());
+                $first->save();
+                $user->delete();
+            });
+        }
     }
 
     public function generateUserName(string $platform = '', array $options = []): string

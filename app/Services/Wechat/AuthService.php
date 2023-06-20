@@ -3,10 +3,10 @@
 namespace App\Services\Wechat;
 
 use App\Models\User;
-use App\Services\Service;
+use App\Services\AuthService as BaseAuthService;
 use App\Services\UserService;
 
-class AuthService extends Service
+class AuthService extends BaseAuthService
 {
     public function login(string $code)
     {
@@ -31,22 +31,12 @@ class AuthService extends Service
         {
             return new User();
         }
-        $user = User::where('wechat_open_id', $data['open_id'])->first();
-        if(!$user) {
-            $user = User::query()->forceCreate([
-                'username' => UserService::getInstance()->generateUserName('wechat', $data),
-                'wechat_open_id' => $data['open_id'],
-                'wechat_union_id' => $data['union_id'] ?? '',
-            ]);
-        } else {
-            $fill = [
-                'wechat_open_id' => $data['open_id'],
-                'wechat_union_id' => $data['union_id'] ?? '',
-            ];
-            $user->forceFill($fill);
-            $user->save();
-        }
 
-        return $user;
+        $params = [
+            'wechat_open_id' => $data['open_id'],
+            'wechat_union_id' => $data['union_id'] ?? '',
+        ];
+
+        return UserService::getInstance()->store($params);
     }
 }

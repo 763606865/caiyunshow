@@ -62,3 +62,16 @@ if (!function_exists('is_url')) {
         return str_contains($url, "http");
     }
 }
+
+if (!function_exists('is_phone_number')) {
+    /**
+     * 判断是否为手机号
+     *
+     * @param $value
+     * @return bool
+     */
+    function is_phone_number($value): bool
+    {
+        return (bool)preg_match('/^(1)\d{10}$/', $value);
+    }
+}

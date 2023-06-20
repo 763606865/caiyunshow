@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'wechat',
         'passwords' => 'users',
     ],
 
@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+        'wechat' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ]
     ],
 
     /*
