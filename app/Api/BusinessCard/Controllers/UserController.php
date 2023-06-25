@@ -17,7 +17,7 @@ class UserController extends Controller
             'email' => ['nullable', 'email'],
             'avatar' => ['nullable', 'url'],
         ],[],[
-            'nickname' => '昵称',
+            'name' => '昵称',
             'mobile' => '手机号',
             'email' => '邮箱',
             'avatar' => '头像',
