@@ -17,14 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
 Route::group([
     'prefix' => '/business_card',
-    'namespace' => 'App\\Api\\BusinessCard\\Controllers',
+    'namespace' => 'App\\Api\\BusinessCard\\Controllers'
 ], static function (Router $router) {
 
     $router->group(['prefix' => '/auth'], function (Router $router) {
@@ -35,11 +30,11 @@ Route::group([
     });
 
     // 用户信息
-    $router->group(['prefix' => '/user'], function (Router $router) {
+    $router->group(['prefix' => '/user', 'middleware' => ['auth.business_card']], function (Router $router) {
         $router->group(['prefix' => '/wechat'], function (Router $router) {
-            $router->post('/sync', 'UserController@wechatSync')->name('wechat_sync');
+            $router->post('/sync', [\App\Api\BusinessCard\Controllers\UserController::class, 'wechatSync'])->name('wechat_sync');
         });
-    })->middleware('auth');
+    });
 
 
     $router->group(['prefix' => '/test'], function (Router $router) {
