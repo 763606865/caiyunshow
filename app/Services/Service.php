@@ -4,7 +4,7 @@ namespace App\Services;
 
 class Service
 {
-    private static $instance;
+    public static $instance;
 
     private function __construct()
     {
