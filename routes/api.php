@@ -2,6 +2,7 @@
 
 use App\Api\BusinessCard\Controllers\AuthController;
 use App\Api\BusinessCard\Controllers\IndexController;
+use App\Api\Tool\Controllers\StateOpenController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -46,4 +47,13 @@ Route::group([
 
     $router->post('/test', [IndexController::class, 'test']);
     $router->get('/user', [AuthController::class, 'user']);
+});
+
+Route::group([
+    'prefix' => '/tool',
+    'namespace' => 'App\\Api\\Tool\\Controllers'
+], static function (Router $router) {
+    // 国家开放大学-监听video
+    Route::post('/state_open/video_listener', [StateOpenController::class, 'postVideoListener']);
+    // ---------------------------------------------------------------------------
 });
