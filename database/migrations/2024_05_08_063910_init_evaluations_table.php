@@ -26,8 +26,6 @@ return new class extends Migration
             $table->string('code', 40)->unique()->collation('utf8mb4_bin')->comment('编码');
             $table->string('name')->comment('指标名称');
             $table->text('description')->comment('指标说明');
-            $table->decimal('z_score')->comment('均值');
-            $table->decimal('sd_score')->comment('标准差');
             $table->mediumText('suggestions')->nullable()->comment('建议文案');
             $table->unsignedInteger('weight')->default(0)->index()->comment('排序');
             $table->string('note')->nullable()->comment('备注');

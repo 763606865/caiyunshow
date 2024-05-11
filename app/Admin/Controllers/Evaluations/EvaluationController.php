@@ -12,7 +12,7 @@ class EvaluationController extends Controller
 {
     protected $title = 'Evaluations';
 
-    protected function grid()
+    protected function grid(): Grid
     {
         $grid = new Grid(new Evaluation());
 
@@ -23,7 +23,7 @@ class EvaluationController extends Controller
         return $grid;
     }
 
-    protected function form()
+    protected function form(): Form
     {
         $form = new Form(new Evaluation());
 
@@ -41,6 +41,13 @@ class EvaluationController extends Controller
                 $setting['generate_reports_when_finished'] = false;
             }
             $model->setting = $setting;
+        });
+
+        $form->footer(function ($footer) {
+            $footer->disableReset();
+            $footer->disableViewCheck();
+            $footer->disableEditingCheck();
+            $footer->disableCreatingCheck();
         });
 
         return $form;

@@ -2,6 +2,7 @@
 
 use App\Admin\Controllers\BannerController;
 use App\Admin\Controllers\Evaluations\EvaluationController;
+use App\Admin\Controllers\Evaluations\IndicatorsController;
 use App\Admin\Controllers\MenuController;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Routing\Router;
@@ -32,11 +33,15 @@ Route::group([
     'as'            => config('admin.route.prefix') . '.',
 ], static function (Router $router) {
 
-    // 测评-列表
+    // 类别-列表
     $router->get('/evaluation/evaluations', [EvaluationController::class, 'index']);
-    // 测评-新增页
+    // 类别-新增页
     $router->get('/evaluation/evaluations/create', [EvaluationController::class, 'create']);
-    // 测评-新增
+    // 类别-新增
     $router->post('/evaluation/evaluations', [EvaluationController::class, 'store']);
+    // ----------------------------------------------------------------------------------
+
+    // 指标库
+    $router->resource('/evaluation/indicators', IndicatorsController::class);
     // ----------------------------------------------------------------------------------
 });

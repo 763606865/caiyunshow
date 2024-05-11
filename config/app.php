@@ -194,7 +194,12 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        /*
+         * Self Create Service Providers...
+         */
         Overtrue\LaravelWeChat\ServiceProvider::class,
+        App\Admin\Fields\FieldsProvider::class,
     ],
 
     /*
