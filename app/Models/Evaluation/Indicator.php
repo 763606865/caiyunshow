@@ -29,4 +29,15 @@ class Indicator extends Model
     {
         return $this->belongsTo(Evaluation::class, 'evaluation_id');
     }
+
+    /**
+     * 设置suggestions
+     *
+     * @param $value
+     * @return void
+     */
+    public function setSuggestionsAttribute($value): void
+    {
+        $this->attributes['suggestions'] = json_encode(array_values($value));
+    }
 }

@@ -9,7 +9,6 @@ use App\Models\Evaluation\Indicator;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use InvalidArgumentException;
-use function Laravel\Prompts\error;
 
 class IndicatorsController extends Controller
 {
@@ -51,7 +50,7 @@ class IndicatorsController extends Controller
                 $model->code = 'T'.date('YmdHis');
             }
             try {
-                $model->suggestions = $this->validateSuggestions($form->input('suggestions'));
+                $this->validateSuggestions($form->input('suggestions'));
             } catch (InvalidArgumentException $e) {
                 throw new InvalidArgumentException($e->getMessage());
             }
@@ -91,7 +90,6 @@ class IndicatorsController extends Controller
         if ((double)$suggestions[$count-1]['max'] !== 100.00) {
             throw new InvalidArgumentException('必须截止到100。');
         }
-dd($suggestions);
         return $suggestions;
     }
 }
