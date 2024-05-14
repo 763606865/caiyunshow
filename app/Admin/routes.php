@@ -2,7 +2,7 @@
 
 use App\Admin\Controllers\BannerController;
 use App\Admin\Controllers\Evaluations\EvaluationController;
-use App\Admin\Controllers\Evaluations\IndicatorsController;
+use App\Admin\Controllers\Evaluations\IndicatorController;
 use App\Admin\Controllers\MenuController;
 use Encore\Admin\Facades\Admin;
 use Illuminate\Routing\Router;
@@ -42,6 +42,6 @@ Route::group([
     // ----------------------------------------------------------------------------------
 
     // 指标库
-    $router->resource('/evaluation/indicators', IndicatorsController::class);
+    $router->resource('/evaluation/indicators', IndicatorController::class);
     // ----------------------------------------------------------------------------------
 });

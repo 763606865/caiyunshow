@@ -11,7 +11,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use InvalidArgumentException;
 
-class IndicatorsController extends Controller
+class IndicatorController extends Controller
 {
     protected $title = 'Indicators';
 
