@@ -35,9 +35,10 @@ class Indicator extends Model
      *
      * @param $value
      * @return void
+     * @throws \JsonException
      */
     public function setSuggestionsAttribute($value): void
     {
-        $this->attributes['suggestions'] = json_encode(array_values($value));
+        $this->attributes['suggestions'] = json_encode(array_values($value), JSON_THROW_ON_ERROR);
     }
 }

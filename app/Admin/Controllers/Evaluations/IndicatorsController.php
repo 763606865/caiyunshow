@@ -8,6 +8,7 @@ use App\Models\Evaluation\Evaluation;
 use App\Models\Evaluation\Indicator;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
+use Encore\Admin\Show;
 use InvalidArgumentException;
 
 class IndicatorsController extends Controller
@@ -66,6 +67,20 @@ class IndicatorsController extends Controller
         return $form;
     }
 
+    protected function detail($id)
+    {
+        $show = new Show(Indicator::findOrFail($id));
+
+        $show->field('evaluation_id', '所属测评类别')->options(function () {
+            return Evaluation::query()->pluck('name','id')->all();
+        });
+        $show->field('name', __('Name'));
+        $show->field('description', __('Description'));
+        $show->field('note', __('Note'));
+
+        return $show;
+    }
+
     /**
      * @throws \Exception
      */
@@ -76,10 +91,11 @@ class IndicatorsController extends Controller
         $index = 0;
         if ($count > 1) {
             // 判断连续性
-            while ($index < $count) {
+            while ($index < $count-1) {
                 if ((double)$suggestions[$index]['max'] !== (double)$suggestions[$index+1]['min']) {
                     throw new InvalidArgumentException('区间并不连续。');
                 }
+                $index++;
             }
         }
         // 规定起点终点
