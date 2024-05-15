@@ -20,6 +20,13 @@ class EvaluationController extends Controller
         $grid->column('name', __('Name'));
         $grid->column('setting->generate_reports_when_finished', '是否完成后就生成报告')->switch();
 
+        $grid->actions(function ($actions) {
+            $actions->disableView();
+            $actions->disableDelete();
+
+            $actions->append('<a href="/admin/evaluation/measures?evaluation_id=' . $actions->getKey() . '">指标组</a>');
+        });
+
         return $grid;
     }
 
@@ -32,7 +39,7 @@ class EvaluationController extends Controller
         $form->saving(function (Form $form) {
             $model = $form->model();
             if (!$model->exists) {
-                $model->code = 'E'.date('YmdHis');
+                $model->code = 'E' . date('YmdHis');
             }
             $generate_reports_when_finished = $form->input('setting.generate_reports_when_finished');
             if ($generate_reports_when_finished === 'on') {
