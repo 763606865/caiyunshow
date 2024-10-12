@@ -55,5 +55,6 @@ Route::group([
 ], static function (Router $router) {
     // 国家开放大学-监听video
     Route::post('/state_open/video_listener', [StateOpenController::class, 'postVideoListener']);
+    Route::post('/state_open/video_listener/bulk', [StateOpenController::class, 'postBulkVideoListener']);
     // ---------------------------------------------------------------------------
 });

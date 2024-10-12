@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class RequestService extends Service
 {
-    private string $host = '';
+    protected string $host = '';
 
     public function get(string $uri = '', array $reqData = [], array $heads = [])
     {
@@ -46,7 +46,7 @@ class RequestService extends Service
             ],
             default => [
                 'headers' => $heads,
-                'form_params' => $reqData
+                'json' => $reqData
             ],
         };
         Log::info("\nMethod:" . $method . "\nUrl: ".$url . "\nBody: ", $body);
