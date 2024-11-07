@@ -289,7 +289,7 @@ return [
     | "sidebar-mini".
     |
     */
-    'layout' => [],
+    'layout' => ['sidebar-mini', 'sidebar-collapse'],
 
     /*
     |--------------------------------------------------------------------------
@@ -338,7 +338,7 @@ return [
     |
     | Whether enable default breadcrumb for every page content.
     */
-    'enable_default_breadcrumb' => false,
+    'enable_default_breadcrumb' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -383,7 +383,7 @@ return [
     | The global Grid action display class.
     |--------------------------------------------------------------------------
     */
-    'grid_action_class' => \Encore\Admin\Grid\Displayers\Actions::class,
+    'grid_action_class' => \Encore\Admin\Grid\Displayers\DropdownActions::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -405,16 +405,6 @@ return [
     |
     */
     'extensions' => [
-        'ueditor' => [
 
-            // 如果要关掉这个扩展，设置为false
-            'enable' => true,
-
-            // 编辑器的前端配置 参考：http://fex.baidu.com/ueditor/#start-config
-            'config' => [
-                'initialFrameHeight' => 400, // 例如初始化高度
-            ],
-            // 'field_type' => '自定义名字'
-        ],
     ],
 ];

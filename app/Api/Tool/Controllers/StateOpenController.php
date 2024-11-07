@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendStateOpenRequestJob;
 use App\Services\RequestService;
 use App\Services\StateOpenRequestService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -58,18 +59,20 @@ class StateOpenController extends Controller
             'header' => '请求头'
         ]);
         $header = $validated['header'];
-        $i = 0;
-        foreach ($validated['data'] as $item) {
-            $start = microtime(true);
-            $header['referer'] = 'https://lms.ouchn.cn/course/' . $item['id'] . '/learning-activity/full-screen';
-            $postData = [
-                'start' => 0,
-                'end' => (60 * (int)$item['minute']) + (int)$item['second']
-            ];
-            $time = floor($i/10);
-            SendStateOpenRequestJob::dispatch($item['id'], $postData, $header)->onQueue('send_state_open_request')->delay(60 * $time);
-            $i++;
-        }
+        $group = 0;
+        collect($validated['data'])->chunk(10)->each(function ($records) use (&$group, $header) {
+            foreach ($records as $key => $item) {
+                $header['referer'] = 'https://lms.ouchn.cn/course/' . $item['id'] . '/learning-activity/full-screen';
+                $postData = [
+                    'start' => 0,
+                    'end' => (60 * (int)$item['minute']) + (int)$item['second']
+                ];
+                // php artisan queue:work --queue=send_state_open_request --tries=2 --max-time=360 --backoff=120
+                SendStateOpenRequestJob::dispatch($item['id'], $postData, $header)->onQueue('send_state_open_request')->delay(now()->addSeconds($key * 2)->addMinutes($group * 5));
+            }
+            $group++;
+        });
+
         return api_response();
     }
 }
