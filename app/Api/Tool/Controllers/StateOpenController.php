@@ -63,9 +63,11 @@ class StateOpenController extends Controller
         collect($validated['data'])->chunk(10)->each(function ($records) use (&$group, $header) {
             foreach ($records as $key => $item) {
                 $header['referer'] = 'https://lms.ouchn.cn/course/' . $item['id'] . '/learning-activity/full-screen';
+                $duration = (60 * (int)$item['minute']) + (int)$item['second'];
                 $postData = [
                     'start' => 0,
-                    'end' => (60 * (int)$item['minute']) + (int)$item['second']
+                    'end' => $duration,
+                    'duration' => $duration
                 ];
                 // php artisan queue:work --queue=send_state_open_request --tries=2 --max-time=360 --backoff=120
                 SendStateOpenRequestJob::dispatch($item['id'], $postData, $header)->onQueue('send_state_open_request')->delay(now()->addSeconds($key * 2)->addMinutes($group * 5));
