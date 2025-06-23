@@ -2,6 +2,7 @@
 
 use App\Api\BusinessCard\Controllers\AuthController;
 use App\Api\BusinessCard\Controllers\IndexController;
+use App\Api\Tool\Controllers\PlatformController;
 use App\Api\Tool\Controllers\StateOpenController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
@@ -56,5 +57,8 @@ Route::group([
     // 国家开放大学-监听video
     Route::post('/state_open/video_listener', [StateOpenController::class, 'postVideoListener']);
     Route::post('/state_open/video_listener/bulk', [StateOpenController::class, 'postBulkVideoListener']);
+    // ---------------------------------------------------------------------------
+    // 三方平台登录
+    Route::post('/platform/login', [PlatformController::class, 'postLogin']);
     // ---------------------------------------------------------------------------
 });

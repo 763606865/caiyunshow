@@ -70,6 +70,7 @@ class StateOpenController extends Controller
                     'duration' => $duration
                 ];
                 // php artisan queue:work --queue=send_state_open_request --tries=2 --max-time=360 --backoff=120
+                // php artisan queue:flush
                 SendStateOpenRequestJob::dispatch($item['id'], $postData, $header)->onQueue('send_state_open_request')->delay(now()->addSeconds($key * 2)->addMinutes($group * 5));
             }
             $group++;
